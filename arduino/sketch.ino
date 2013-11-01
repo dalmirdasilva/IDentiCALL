@@ -6,9 +6,15 @@
 #define BIT_2             5
 #define BIT_3             6
 
+#define MAX_NUMBER_LENGHT 10
+#define LAST_DIGIT_MARK   15
+
+unsigned char phoneNumberBufferPointer = 0;
 unsigned char phoneNumberBuffer[20];
 volatile long lastRead = 0;
 volatile unsigned char digit = 0;
+unsigned long lastDigitTime = millis();
+unsigned long maxAcceptableTimeBetweenDigits = 500;
 
 void setup() {
   Serial.begin(9600);
@@ -49,6 +55,31 @@ void readDigit() {
 }
 
 void processDigit(unsigned char digit) {
-  Serial.println(digit, DEC);
-  
+  unsigned long rightNow = millis();
+  if (rightNow - lastDigitTime > maxAcceptableTimeBetweenDigits) {
+    discardBuffer();
+  } else {
+    consumeDigit(digit);
+  }
+  lastDigitTime = rightNow;
+}
+
+void discardBuffer() {
+  phoneNumberBufferPointer = 0;
+}
+
+void consumeDigit(unsigned char digit) {
+  phoneNumberBuffer[phoneNumberBufferPointer++] = digit;
+  checkNumberCompletion();
+}
+
+void checkNumberCompletion() {
+  if (phoneNumberBufferPointer >= MAX_NUMBER_LENGHT || 
+        phoneNumberBuffer[phoneNumberBufferPointer - 1] == LAST_DIGIT_MARK) {
+    for (unsigned char i = 0; i < phoneNumberBufferPointer; i++) {
+      Serial.print(phoneNumberBuffer[i], DEC);
+    }
+    Serial.println();
+    discardBuffer();
+  }
 }
