@@ -58,9 +58,8 @@ void processDigit(unsigned char digit) {
   unsigned long rightNow = millis();
   if (rightNow - lastDigitTime > maxAcceptableTimeBetweenDigits) {
     discardBuffer();
-  } else {
-    consumeDigit(digit);
   }
+  consumeDigit(digit);
   lastDigitTime = rightNow;
 }
 
@@ -69,17 +68,14 @@ void discardBuffer() {
 }
 
 void consumeDigit(unsigned char digit) {
-  phoneNumberBuffer[phoneNumberBufferPointer++] = digit;
+  phoneNumberBuffer[phoneNumberBufferPointer++] = digit + '0';
   checkNumberCompletion();
 }
 
 void checkNumberCompletion() {
-  if (phoneNumberBufferPointer >= MAX_NUMBER_LENGHT || 
-        phoneNumberBuffer[phoneNumberBufferPointer - 1] == LAST_DIGIT_MARK) {
-    for (unsigned char i = 0; i < phoneNumberBufferPointer; i++) {
-      Serial.print(phoneNumberBuffer[i], DEC);
-    }
-    Serial.println();
+  if (phoneNumberBufferPointer >= MAX_NUMBER_LENGHT || phoneNumberBuffer[phoneNumberBufferPointer - 1] == LAST_DIGIT_MARK) {
+    Serial.write(phoneNumberBuffer, phoneNumberBufferPointer);
+    Serial.write('\n');
     discardBuffer();
   }
 }
