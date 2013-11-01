@@ -236,7 +236,7 @@ public class MainWindow extends javax.swing.JFrame {
         formPanel.setBackground(new java.awt.Color(254, 254, 254));
 
         nameLabel.setFont(new java.awt.Font("Ubuntu", 0, 36)); // NOI18N
-        nameLabel.setText("<Nome do cliente>");
+        nameLabel.setText("<Cliente não econtrado>");
 
         cpfLabelFixed.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
         cpfLabelFixed.setText("CPF/CNPJ:");
