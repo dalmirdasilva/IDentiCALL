@@ -68,7 +68,7 @@ void discardBuffer() {
 }
 
 void consumeDigit(unsigned char digit) {
-  phoneNumberBuffer[phoneNumberBufferPointer++] = digit + '0';
+  phoneNumberBuffer[phoneNumberBufferPointer++] = digit;
   checkNumberCompletion();
 }
 

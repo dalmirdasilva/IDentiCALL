@@ -16,13 +16,8 @@ import java.util.TooManyListenersException;
 public class DTMFSerial {
 
     private SerialPort serialPort;
-    private SerialPortEventListener serialPortEventListener;
 
-    public DTMFSerial(SerialPortEventListener serialPortEventListener) {
-        this.serialPortEventListener = serialPortEventListener;
-    }
-
-    void connect(String portName) throws
+    public void connect(String portName) throws
             NoSuchPortException,
             PortInUseException,
             UnsupportedCommOperationException,
@@ -42,11 +37,14 @@ public class DTMFSerial {
                 serialPort = (SerialPort) commPort;
                 serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
                 serialPort.notifyOnDataAvailable(true);
-                serialPort.addEventListener(serialPortEventListener);
             } else {
                 System.out.println("Error: Only serial ports are handled by this example.");
             }
         }
+    }
+    
+    public void addSerialPortEventListener(SerialPortEventListener serialPortEventListener) throws TooManyListenersException {
+        this.serialPort.addEventListener(serialPortEventListener);
     }
 
     public InputStream getInputStream() throws IOException {
