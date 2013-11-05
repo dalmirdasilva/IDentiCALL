@@ -62,7 +62,6 @@ public abstract class GenericHibernateDAO<T, K extends Serializable>
     @SuppressWarnings("unchecked")
     @Override
     public List<T> findByExample(List<T> exampleInstanceList, String[] excludeProperty) {
-        session.getTransaction().begin();
         Criteria criteria = session.createCriteria(getPersistentClass());
         if (exampleInstanceList != null) {
             Disjunction or = Restrictions.disjunction();
@@ -79,7 +78,6 @@ public abstract class GenericHibernateDAO<T, K extends Serializable>
             criteria.add(or);
         }
         List<T> list = criteria.list();
-        session.getTransaction().commit();
         return list;
     }
 

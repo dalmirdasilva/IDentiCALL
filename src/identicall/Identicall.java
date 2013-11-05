@@ -6,7 +6,7 @@ import dao.IncomingCallDAO;
 import dao.hibernate.CustomerHibernateDAO;
 import dao.hibernate.HibernateDAOFactory;
 import dao.hibernate.IncomingCallHibernateDAO;
-import dtmfserial.DTMFSerial;
+import serialclient.SerialClient;
 import entity.Customer;
 import entity.IncomingCall;
 import gnu.io.NoSuchPortException;
@@ -16,7 +16,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
@@ -62,8 +61,7 @@ public class Identicall implements PhoneNumberReadyListener, CustomerSearchListe
 
         final Identicall instance = this;
 
-        DTMFSerial dtmfSerial = new DTMFSerial();
-        IncomingCallListener incomingCallListener = new IncomingCallListener(dtmfSerial, instance);
+        IncomingCallReader incomingCallListener = new IncomingCallReader(instance);
 
         java.awt.EventQueue.invokeLater(
                 new Runnable() {

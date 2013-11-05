@@ -51,9 +51,4 @@ public class IncomingCall implements Serializable {
     public void setCallAt(Time callAt) {
         this.callAt = callAt;
     }
-
-    @Override
-    public String toString() {
-        return "{number: " + number + ", callAt: " + callAt + "}";
-    }
 }

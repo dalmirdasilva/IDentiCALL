@@ -1,6 +1,6 @@
 package identicall;
 
-import dtmfserial.DTMFSerial;
+import serialclient.SerialClient;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPortEvent;
@@ -10,20 +10,25 @@ import java.io.IOException;
 import java.util.TooManyListenersException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import serialclient.SerialClientException;
 
-public class IncomingCallListener implements SerialPortEventListener {
+public class IncomingCallReader implements SerialPortEventListener {
 
     final private static char END_NUMBER_MARK = '\n';
-    private DTMFSerial dtmfSerial;
+    private SerialClient serialClient;
     private PhoneNumberReadyListener phoneNumberReadyListener;
     private char[] incomingBuffer = new char[20];
     private int incomingBufferPoiter = 0;
 
-    public IncomingCallListener(DTMFSerial dtmfSerial, PhoneNumberReadyListener phoneNumberReadyListener) throws
+    public IncomingCallReader(PhoneNumberReadyListener phoneNumberReadyListener) throws
             NoSuchPortException, PortInUseException, UnsupportedCommOperationException, TooManyListenersException, IOException {
-        this.dtmfSerial = dtmfSerial;
+        this.serialClient = new SerialClient();
         this.phoneNumberReadyListener = phoneNumberReadyListener;
-        connectSerial();
+        try {
+            connectSerialClient();
+        } catch (SerialClientException ex) {
+            Logger.getLogger(IncomingCallReader.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
@@ -42,7 +47,7 @@ public class IncomingCallListener implements SerialPortEventListener {
             case SerialPortEvent.DATA_AVAILABLE:
                 int input = 0;
                 try {
-                    while ((input = dtmfSerial.getInputStream().read()) != -1) {
+                    while ((input = serialClient.getInputStream().read()) != -1) {
                         if (input == END_NUMBER_MARK || incomingBufferPoiter >= 20) {
                             if (phoneNumberReadyListener != null) {
                                 String phone = String.copyValueOf(incomingBuffer, 0, incomingBufferPoiter);
@@ -55,16 +60,16 @@ public class IncomingCallListener implements SerialPortEventListener {
                             incomingBuffer[incomingBufferPoiter++] = (char) input;
                         }
                     }
-                } catch (IOException ex) {
-                    Logger.getLogger(IncomingCallListener.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException | SerialClientException ex) {
+                    Logger.getLogger(IncomingCallReader.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 break;
         }
     }
 
-    private void connectSerial() throws
-            NoSuchPortException, PortInUseException, UnsupportedCommOperationException, TooManyListenersException, IOException {
-        dtmfSerial.connect("/dev/ttyACM0");
-        dtmfSerial.addSerialPortEventListener(this);
+    private void connectSerialClient() throws
+            NoSuchPortException, PortInUseException, UnsupportedCommOperationException, TooManyListenersException, IOException, SerialClientException {
+        serialClient.connect("/dev/ttyACM0");
+        serialClient.addSerialPortEventListener(this);
     }
 }

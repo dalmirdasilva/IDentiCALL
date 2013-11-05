@@ -1,4 +1,4 @@
-package dtmfserial;
+package serialclient;
 
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
@@ -13,7 +13,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.TooManyListenersException;
 
-public class DTMFSerial {
+public class SerialClient {
 
     private SerialPort serialPort;
 
@@ -22,12 +22,13 @@ public class DTMFSerial {
             PortInUseException,
             UnsupportedCommOperationException,
             TooManyListenersException,
-            IOException {
+            IOException,
+            SerialClientException {
 
         CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
 
         if (portIdentifier.isCurrentlyOwned()) {
-            System.out.println("Error: Port is currently in use");
+            throw new SerialClientException("Port is currently in use");
         } else {
 
             CommPort commPort = portIdentifier.open(this.getClass().getName(), 2000);
@@ -38,20 +39,29 @@ public class DTMFSerial {
                 serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
                 serialPort.notifyOnDataAvailable(true);
             } else {
-                System.out.println("Error: Only serial ports are handled by this example.");
+                throw new SerialClientException("Only serial ports are handled by this example.");
             }
         }
     }
-    
-    public void addSerialPortEventListener(SerialPortEventListener serialPortEventListener) throws TooManyListenersException {
+
+    public void addSerialPortEventListener(SerialPortEventListener serialPortEventListener) throws TooManyListenersException, SerialClientException {
+        if (serialPort == null) {            
+            throw new SerialClientException("Serial port is not ready"); 
+        }
         this.serialPort.addEventListener(serialPortEventListener);
     }
 
-    public InputStream getInputStream() throws IOException {
+    public InputStream getInputStream() throws IOException, SerialClientException {
+        if (serialPort == null) {            
+            throw new SerialClientException("Serial port is not ready"); 
+        }
         return serialPort.getInputStream();
     }
 
-    public OutputStream getOutputStream() throws IOException {
+    public OutputStream getOutputStream() throws IOException, SerialClientException {
+        if (serialPort == null) {            
+            throw new SerialClientException("Serial port is not ready"); 
+        }
         return serialPort.getOutputStream();
     }
 }

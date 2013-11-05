@@ -555,6 +555,7 @@ public class MainWindow extends javax.swing.JFrame {
             searchMessageLabel.setText("Preencha o campo.");
             return;
         }
+        
         searchText = "%" + searchText + "%";
         int selectedIndex = searchComboBox.getSelectedIndex();
         List<Customer> examples = new ArrayList<>();
