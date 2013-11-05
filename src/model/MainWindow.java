@@ -109,6 +109,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
+        getContentPane().setLayout(new java.awt.BorderLayout());
 
         headerPanel.setBackground(new java.awt.Color(201, 208, 209));
         headerPanel.setPreferredSize(new java.awt.Dimension(762, 60));
@@ -533,6 +534,8 @@ public class MainWindow extends javax.swing.JFrame {
 
         getContentPane().add(bodyPanel, java.awt.BorderLayout.CENTER);
 
+        menuBar.setBackground(new java.awt.Color(254, 254, 254));
+
         fileMenu.setText("Arquivo");
         fileMenu.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
         menuBar.add(fileMenu);
@@ -592,21 +595,23 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void incomingCallListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_incomingCallListMouseClicked
         String selected = (String) incomingCallList.getSelectedValue();
-        StringBuilder number = new StringBuilder();
-        number.append(selected.substring(1, 3));
-        number.append(selected.substring(5, 13));
-        String numberString = number.toString();
-        List<Customer> examples = new ArrayList<>();
-        Customer cellPhoneExample = new Customer();
-        cellPhoneExample.setCellPhone(numberString);
-        Customer businessPhoneExample = new Customer();
-        businessPhoneExample.setBusinessPhone(numberString);
-        Customer residentialBusinessPhone = new Customer();
-        residentialBusinessPhone.setResidentialPhone(numberString);
-        examples.add(cellPhoneExample);
-        examples.add(businessPhoneExample);
-        examples.add(residentialBusinessPhone);
-        searchListener.onCustomerSearch(examples, number.toString(), false);
+        if (selected != null && selected.length() >= 12) {
+            StringBuilder number = new StringBuilder();
+            number.append(selected.substring(1, 3));
+            number.append(selected.substring(5, 13));
+            String numberString = number.toString();
+            List<Customer> examples = new ArrayList<>();
+            Customer cellPhoneExample = new Customer();
+            cellPhoneExample.setCellPhone(numberString);
+            Customer businessPhoneExample = new Customer();
+            businessPhoneExample.setBusinessPhone(numberString);
+            Customer residentialBusinessPhone = new Customer();
+            residentialBusinessPhone.setResidentialPhone(numberString);
+            examples.add(cellPhoneExample);
+            examples.add(businessPhoneExample);
+            examples.add(residentialBusinessPhone);
+            searchListener.onCustomerSearch(examples, number.toString(), false);
+        }
     }//GEN-LAST:event_incomingCallListMouseClicked
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel addressLabel;

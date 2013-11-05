@@ -77,6 +77,7 @@ public class Identicall implements PhoneNumberReadyListener, CustomerSearchListe
 
     @Override
     public void processPhoneNumber(String number) {
+        System.out.println("number: " + number);
         List<Customer> examples = new ArrayList<>();
         Customer cellPhoneExample = new Customer();
         cellPhoneExample.setCellPhone(number);
