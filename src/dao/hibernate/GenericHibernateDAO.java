@@ -8,7 +8,9 @@ import org.hibernate.Criteria;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Example;
+import org.hibernate.criterion.Restrictions;
 
 public abstract class GenericHibernateDAO<T, K extends Serializable>
         implements GenericDAO<T, K> {
@@ -59,17 +61,24 @@ public abstract class GenericHibernateDAO<T, K extends Serializable>
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<T> findByExample(T exampleInstance, String[] excludeProperty) {
+    public List<T> findByExample(List<T> exampleInstanceList, String[] excludeProperty) {
         session.getTransaction().begin();
-        Criteria criteriacrit = session.createCriteria(getPersistentClass());
-        Example example = Example.create(exampleInstance);
-        if (excludeProperty != null) {
-            for (String exclude : excludeProperty) {
-                example.excludeProperty(exclude);
+        Criteria criteria = session.createCriteria(getPersistentClass());
+        if (exampleInstanceList != null) {
+            Disjunction or = Restrictions.disjunction();
+            for (T exampleInstance : exampleInstanceList) {
+                Example example = Example.create(exampleInstance);
+                example.enableLike();
+                if (excludeProperty != null) {
+                    for (String exclude : excludeProperty) {
+                        example.excludeProperty(exclude);
+                    }
+                }
+                or.add(example);
             }
+            criteria.add(or);
         }
-        criteriacrit.add(example);
-        List<T> list = criteriacrit.list();
+        List<T> list = criteria.list();
         session.getTransaction().commit();
         return list;
     }

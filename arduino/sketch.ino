@@ -7,7 +7,7 @@
 #define BIT_3             6
 
 #define MAX_NUMBER_LENGHT 10
-#define LAST_DIGIT_MARK   15
+#define LAST_DIGIT_MARK   ('0' + 15)
 
 unsigned char phoneNumberBufferPointer = 0;
 unsigned char phoneNumberBuffer[20];
@@ -68,7 +68,7 @@ void discardBuffer() {
 }
 
 void consumeDigit(unsigned char digit) {
-  phoneNumberBuffer[phoneNumberBufferPointer++] = digit;
+  phoneNumberBuffer[phoneNumberBufferPointer++] = '0' + digit;
   checkNumberCompletion();
 }
 

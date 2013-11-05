@@ -11,7 +11,7 @@ public interface GenericDAO<T, K extends Serializable> {
  
     List<T> findAll();
  
-    List<T> findByExample(T exampleInstance, String[] excludeProperty);
+    List<T> findByExample(List<T> exampleInstanceList, String[] excludeProperty);
  
     T saveEntity(T entity);
  

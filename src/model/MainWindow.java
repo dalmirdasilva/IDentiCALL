@@ -5,6 +5,10 @@
 package model;
 
 import entity.Customer;
+import identicall.CustomerSearchListener;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.DefaultListModel;
 
 /**
  *
@@ -12,11 +16,26 @@ import entity.Customer;
  */
 public class MainWindow extends javax.swing.JFrame {
 
+    static {
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("GTK+".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+    }
+    private CustomerSearchListener searchListener;
+
     /**
      * Creates new form MainWindow
      */
-    public MainWindow() {
+    public MainWindow(CustomerSearchListener searchListener) {
         initComponents();
+        this.searchListener = searchListener;
     }
 
     /**
@@ -41,14 +60,14 @@ public class MainWindow extends javax.swing.JFrame {
         bodyPanel = new javax.swing.JPanel();
         searchPanel = new javax.swing.JPanel();
         searchLabel = new javax.swing.JLabel();
-        searchTextField = new javax.swing.JTextField();
-        searchDropDown = new javax.swing.JComboBox();
-        searchButton = new javax.swing.JButton();
         searchMessageLabel = new javax.swing.JLabel();
+        searchTextField = new javax.swing.JTextField();
+        searchComboBox = new javax.swing.JComboBox();
+        searchButton = new javax.swing.JButton();
         formPanel = new javax.swing.JPanel();
         nameLabel = new javax.swing.JLabel();
-        cpfLabelFixed = new javax.swing.JLabel();
-        cpfLabel = new javax.swing.JLabel();
+        cpfCnpjLabelFixed = new javax.swing.JLabel();
+        cpfCnpjLabel = new javax.swing.JLabel();
         residentialPhoneLavelFixed = new javax.swing.JLabel();
         residentialPhoneLabel = new javax.swing.JLabel();
         faxLabelFixed = new javax.swing.JLabel();
@@ -80,9 +99,13 @@ public class MainWindow extends javax.swing.JFrame {
         observationLabelFixed = new javax.swing.JLabel();
         observationScrollPannel = new javax.swing.JScrollPane();
         observationTextPane = new javax.swing.JTextPane();
+        stateAbbreviationLabelFixed = new javax.swing.JLabel();
+        stateAbbreviationLabel = new javax.swing.JLabel();
+        municipalityLabelFixed = new javax.swing.JLabel();
+        municipalityLabel = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenu2 = new javax.swing.JMenu();
+        fileMenu = new javax.swing.JMenu();
+        helpMenu = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -110,7 +133,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addComponent(projectDescriptionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(versionLabel)
-                .addContainerGap(546, Short.MAX_VALUE))
+                .addContainerGap(722, Short.MAX_VALUE))
         );
         headerPanelLayout.setVerticalGroup(
             headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -122,11 +145,12 @@ public class MainWindow extends javax.swing.JFrame {
 
         getContentPane().add(headerPanel, java.awt.BorderLayout.PAGE_START);
 
-        rightSidePanel.setPreferredSize(new java.awt.Dimension(260, 445));
+        rightSidePanel.setMaximumSize(new java.awt.Dimension(270, 445));
+        rightSidePanel.setPreferredSize(new java.awt.Dimension(270, 445));
         rightSidePanel.setLayout(new java.awt.BorderLayout());
 
         incomingCallHeaderPanel.setBackground(new java.awt.Color(232, 232, 232));
-        incomingCallHeaderPanel.setPreferredSize(new java.awt.Dimension(250, 35));
+        incomingCallHeaderPanel.setPreferredSize(new java.awt.Dimension(250, 36));
 
         incomingCallLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         incomingCallLabel.setText("Ligações recentes");
@@ -138,36 +162,44 @@ public class MainWindow extends javax.swing.JFrame {
             .addGroup(incomingCallHeaderPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(incomingCallLabel)
-                .addContainerGap(119, Short.MAX_VALUE))
+                .addContainerGap(129, Short.MAX_VALUE))
         );
         incomingCallHeaderPanelLayout.setVerticalGroup(
             incomingCallHeaderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(incomingCallLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+            .addComponent(incomingCallLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
         );
 
         rightSidePanel.add(incomingCallHeaderPanel, java.awt.BorderLayout.PAGE_START);
 
+        incomingCallMainPanel.setPreferredSize(new java.awt.Dimension(300, 485));
+
         incomingCallList.setBackground(new java.awt.Color(178, 171, 171));
         incomingCallList.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
-        incomingCallList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "(00) 0000 0000 00:00 00/00/0000", "(00) 0000 0000 00:00 00/00/0000", "(00) 0000 0000 00:00 00/00/0000", "(00) 0000 0000 00:00 00/00/0000", "(00) 0000 0000 00:00 00/00/0000" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
         incomingCallList.setToolTipText("");
+        incomingCallList.setPreferredSize(new java.awt.Dimension(200, 26));
         incomingCallList.setSelectionBackground(new java.awt.Color(80, 80, 80));
         incomingCallList.setSelectionForeground(new java.awt.Color(254, 254, 254));
+        incomingCallList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                incomingCallListMouseClicked(evt);
+            }
+        });
+        incomingCallList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                incomingCallListValueChanged(evt);
+            }
+        });
         incomingCallScrollPane.setViewportView(incomingCallList);
 
         javax.swing.GroupLayout incomingCallMainPanelLayout = new javax.swing.GroupLayout(incomingCallMainPanel);
         incomingCallMainPanel.setLayout(incomingCallMainPanelLayout);
         incomingCallMainPanelLayout.setHorizontalGroup(
             incomingCallMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(incomingCallScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+            .addComponent(incomingCallScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)
         );
         incomingCallMainPanelLayout.setVerticalGroup(
             incomingCallMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(incomingCallScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
+            .addComponent(incomingCallScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE)
         );
 
         rightSidePanel.add(incomingCallMainPanel, java.awt.BorderLayout.CENTER);
@@ -178,57 +210,56 @@ public class MainWindow extends javax.swing.JFrame {
         bodyPanel.setLayout(new java.awt.BorderLayout());
 
         searchPanel.setBackground(new java.awt.Color(195, 217, 255));
+        searchPanel.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
         searchPanel.setPreferredSize(new java.awt.Dimension(638, 35));
 
-        searchLabel.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
+        searchLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         searchLabel.setText("Pesquisar:");
 
-        searchTextField.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
-        searchTextField.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(168, 168, 168)));
-        searchTextField.setPreferredSize(new java.awt.Dimension(2, 27));
-        searchTextField.setRequestFocusEnabled(false);
+        searchMessageLabel.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
+        searchMessageLabel.setText("   ");
 
-        searchDropDown.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
-        searchDropDown.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Nome", "CPF", "Telefone" }));
-        searchDropDown.setBorder(null);
-        searchDropDown.addActionListener(new java.awt.event.ActionListener() {
+        searchTextField.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
+        searchTextField.setPreferredSize(new java.awt.Dimension(73, 25));
+
+        searchComboBox.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
+        searchComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Telefone", "CPF/CNPF", "Nome" }));
+        searchComboBox.setPreferredSize(new java.awt.Dimension(73, 25));
+
+        searchButton.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
+        searchButton.setText("Pesquisar");
+        searchButton.setPreferredSize(new java.awt.Dimension(73, 27));
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                searchDropDownActionPerformed(evt);
+                searchButtonActionPerformed(evt);
             }
         });
-
-        searchButton.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
-        searchButton.setText("Pesquisar");
-        searchButton.setPreferredSize(new java.awt.Dimension(78, 28));
-
-        searchMessageLabel.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
-        searchMessageLabel.setText("...");
 
         javax.swing.GroupLayout searchPanelLayout = new javax.swing.GroupLayout(searchPanel);
         searchPanel.setLayout(searchPanelLayout);
         searchPanelLayout.setHorizontalGroup(
             searchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(searchPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(searchLabel)
+                .addGap(6, 6, 6)
+                .addComponent(searchLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(searchDropDown, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(searchComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(searchMessageLabel)
-                .addContainerGap(166, Short.MAX_VALUE))
+                .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(searchMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
+                .addContainerGap())
         );
         searchPanelLayout.setVerticalGroup(
             searchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, searchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(searchLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                .addComponent(searchLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(searchMessageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(searchDropDown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(searchMessageLabel))
+                .addComponent(searchComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         bodyPanel.add(searchPanel, java.awt.BorderLayout.PAGE_START);
@@ -238,29 +269,29 @@ public class MainWindow extends javax.swing.JFrame {
         nameLabel.setFont(new java.awt.Font("Ubuntu", 0, 36)); // NOI18N
         nameLabel.setText("<Cliente não econtrado>");
 
-        cpfLabelFixed.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
-        cpfLabelFixed.setText("CPF/CNPJ:");
+        cpfCnpjLabelFixed.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
+        cpfCnpjLabelFixed.setText("CPF/CNPJ:");
 
-        cpfLabel.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
-        cpfLabel.setText("--------- --");
+        cpfCnpjLabel.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
+        cpfCnpjLabel.setText("--------- --");
 
         residentialPhoneLavelFixed.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
         residentialPhoneLavelFixed.setText("Fone Residencial:");
 
         residentialPhoneLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
-        residentialPhoneLabel.setText("(--) ---- ----");
+        residentialPhoneLabel.setText("(--) --------");
 
         faxLabelFixed.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
         faxLabelFixed.setText("Fax:");
 
         faxLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
-        faxLabel.setText("(--) ---- ----");
+        faxLabel.setText("(--) --------");
 
         cellPhoneLabelFixed.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
         cellPhoneLabelFixed.setText("Celular:");
 
         cellPhoneLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
-        cellPhoneLabel.setText("(--) ---- ----");
+        cellPhoneLabel.setText("(--) --------");
 
         emailLabelFixed.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
         emailLabelFixed.setText("Email:");
@@ -296,7 +327,7 @@ public class MainWindow extends javax.swing.JFrame {
         businessPhoneLabelFixed.setText("Fone Comecial:");
 
         businessPhoneLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
-        businessPhoneLabel.setText("(--) ---- ----");
+        businessPhoneLabel.setText("(--) --------");
 
         birthDateLabelFixed.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
         birthDateLabelFixed.setText("Nascimento:");
@@ -334,118 +365,133 @@ public class MainWindow extends javax.swing.JFrame {
         observationTextPane.setEditable(false);
         observationTextPane.setBorder(null);
         observationTextPane.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
+        observationTextPane.setText("---");
         observationScrollPannel.setViewportView(observationTextPane);
+
+        stateAbbreviationLabelFixed.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
+        stateAbbreviationLabelFixed.setText("Estado:");
+
+        stateAbbreviationLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
+        stateAbbreviationLabel.setText("--");
+
+        municipalityLabelFixed.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
+        municipalityLabelFixed.setText("Município:");
+
+        municipalityLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
+        municipalityLabel.setText("---");
 
         javax.swing.GroupLayout formPanelLayout = new javax.swing.GroupLayout(formPanel);
         formPanel.setLayout(formPanelLayout);
         formPanelLayout.setHorizontalGroup(
             formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(formPanelLayout.createSequentialGroup()
-                .addGap(21, 21, 21)
+                .addContainerGap()
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(observationScrollPannel)
+                    .addComponent(observationLabelFixed)
                     .addGroup(formPanelLayout.createSequentialGroup()
-                        .addGap(1, 1, 1)
-                        .addComponent(observationScrollPannel))
+                        .addComponent(cpfCnpjLabelFixed, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cpfCnpjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(formPanelLayout.createSequentialGroup()
-                        .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(observationLabelFixed)
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(businessPhoneLabelFixed)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(businessPhoneLabel))
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(districtLabelFixed)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(districtLabel))
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(corporateNameLabelFixed)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(corporateNameLabel))
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(residentialPhoneLavelFixed)
-                                    .addGroup(formPanelLayout.createSequentialGroup()
-                                        .addComponent(postLabelFixed)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(postLabel)))
-                                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(formPanelLayout.createSequentialGroup()
-                                        .addGap(8, 8, 8)
-                                        .addComponent(residentialPhoneLabel))
-                                    .addGroup(formPanelLayout.createSequentialGroup()
-                                        .addGap(135, 135, 135)
-                                        .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(formPanelLayout.createSequentialGroup()
-                                                .addComponent(problemsLabelFixed)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(problemsLabel))
-                                            .addGroup(formPanelLayout.createSequentialGroup()
-                                                .addComponent(recordLabelFixed)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(recordLabel))
-                                            .addGroup(formPanelLayout.createSequentialGroup()
-                                                .addComponent(legalPersonLavelFixed)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(legalPersonLabel))
-                                            .addGroup(formPanelLayout.createSequentialGroup()
-                                                .addComponent(cityLabelFixed)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(cityLabel))
-                                            .addGroup(formPanelLayout.createSequentialGroup()
-                                                .addComponent(addressLabelFixed)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(addressLabel))
-                                            .addGroup(formPanelLayout.createSequentialGroup()
-                                                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(faxLabelFixed)
-                                                    .addComponent(emailLabelFixed))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(emailLabel)
-                                                    .addComponent(faxLabel)))))))
-                            .addComponent(nameLabel)
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(cellPhoneLabelFixed)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cellPhoneLabel))
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(cpfLabelFixed)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cpfLabel))
+                        .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(formPanelLayout.createSequentialGroup()
                                 .addComponent(birthDateLabelFixed)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(birthDateLabel)))
-                        .addGap(0, 237, Short.MAX_VALUE)))
+                                .addComponent(birthDateLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(formPanelLayout.createSequentialGroup()
+                                .addComponent(postLabelFixed)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(postLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(formPanelLayout.createSequentialGroup()
+                                .addComponent(stateAbbreviationLabelFixed)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(stateAbbreviationLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(formPanelLayout.createSequentialGroup()
+                                .addComponent(legalPersonLavelFixed)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(legalPersonLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(formPanelLayout.createSequentialGroup()
+                                .addComponent(districtLabelFixed)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(districtLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(formPanelLayout.createSequentialGroup()
+                                .addComponent(cellPhoneLabelFixed)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cellPhoneLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(formPanelLayout.createSequentialGroup()
+                                .addComponent(residentialPhoneLavelFixed)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(residentialPhoneLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(formPanelLayout.createSequentialGroup()
+                                .addComponent(businessPhoneLabelFixed)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(businessPhoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(22, 22, 22)
+                        .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(formPanelLayout.createSequentialGroup()
+                                .addComponent(faxLabelFixed)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(faxLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 147, Short.MAX_VALUE))
+                            .addGroup(formPanelLayout.createSequentialGroup()
+                                .addComponent(addressLabelFixed)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(addressLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(formPanelLayout.createSequentialGroup()
+                                .addComponent(emailLabelFixed)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(emailLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(formPanelLayout.createSequentialGroup()
+                                .addComponent(cityLabelFixed)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cityLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(formPanelLayout.createSequentialGroup()
+                                .addComponent(municipalityLabelFixed)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(municipalityLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(formPanelLayout.createSequentialGroup()
+                                .addComponent(corporateNameLabelFixed)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(corporateNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(formPanelLayout.createSequentialGroup()
+                                .addComponent(recordLabelFixed)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(recordLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(formPanelLayout.createSequentialGroup()
+                                .addComponent(problemsLabelFixed)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(problemsLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addComponent(nameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         formPanelLayout.setVerticalGroup(
             formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(formPanelLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(20, 20, 20)
                 .addComponent(nameLabel)
-                .addGap(12, 12, 12)
-                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cpfLabelFixed)
-                    .addComponent(cpfLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(residentialPhoneLavelFixed)
-                    .addComponent(residentialPhoneLabel)
+                    .addComponent(cpfCnpjLabelFixed)
+                    .addComponent(cpfCnpjLabel))
+                .addGap(18, 18, 18)
+                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(faxLabelFixed)
-                    .addComponent(faxLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(faxLabel)
                     .addComponent(cellPhoneLabelFixed)
-                    .addComponent(cellPhoneLabel)
-                    .addComponent(emailLabelFixed)
-                    .addComponent(emailLabel))
+                    .addComponent(cellPhoneLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(corporateNameLabelFixed)
-                    .addComponent(corporateNameLabel)
+                    .addComponent(emailLabelFixed)
+                    .addComponent(emailLabel)
+                    .addComponent(residentialPhoneLavelFixed)
+                    .addComponent(residentialPhoneLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addressLabelFixed)
-                    .addComponent(addressLabel))
+                    .addComponent(addressLabel)
+                    .addComponent(businessPhoneLabelFixed)
+                    .addComponent(businessPhoneLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(districtLabelFixed)
@@ -454,10 +500,16 @@ public class MainWindow extends javax.swing.JFrame {
                     .addComponent(cityLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(businessPhoneLabelFixed)
-                    .addComponent(businessPhoneLabel)
-                    .addComponent(legalPersonLavelFixed)
-                    .addComponent(legalPersonLabel))
+                    .addComponent(municipalityLabelFixed)
+                    .addComponent(municipalityLabel)
+                    .addComponent(stateAbbreviationLabelFixed)
+                    .addComponent(stateAbbreviationLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(corporateNameLabelFixed)
+                    .addComponent(corporateNameLabel)
+                    .addComponent(postLabelFixed)
+                    .addComponent(postLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(birthDateLabelFixed)
@@ -466,14 +518,14 @@ public class MainWindow extends javax.swing.JFrame {
                     .addComponent(recordLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(legalPersonLavelFixed)
+                    .addComponent(legalPersonLabel)
                     .addComponent(problemsLabelFixed)
-                    .addComponent(problemsLabel)
-                    .addComponent(postLabelFixed)
-                    .addComponent(postLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(problemsLabel))
+                .addGap(18, 18, 18)
                 .addComponent(observationLabelFixed)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(observationScrollPannel, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
+                .addComponent(observationScrollPannel, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -481,55 +533,81 @@ public class MainWindow extends javax.swing.JFrame {
 
         getContentPane().add(bodyPanel, java.awt.BorderLayout.CENTER);
 
-        jMenu1.setText("Arquivo");
-        menuBar.add(jMenu1);
+        fileMenu.setText("Arquivo");
+        fileMenu.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
+        menuBar.add(fileMenu);
 
-        jMenu2.setText("Editar");
-        menuBar.add(jMenu2);
+        helpMenu.setText("Ajuda");
+        helpMenu.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
+        menuBar.add(helpMenu);
 
         setJMenuBar(menuBar);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void searchDropDownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchDropDownActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_searchDropDownActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+        String searchText = searchTextField.getText();
+        if (searchText.length() < 3) {
+            searchMessageLabel.setText("Preencha o campo.");
+            return;
         }
-        //</editor-fold>
+        searchText = "%" + searchText + "%";
+        int selectedIndex = searchComboBox.getSelectedIndex();
+        List<Customer> examples = new ArrayList<>();
+        switch (selectedIndex) {
+            case 0:
+                Customer cellPhoneExample = new Customer();
+                cellPhoneExample.setCellPhone(searchText);
+                Customer businessPhoneExample = new Customer();
+                businessPhoneExample.setBusinessPhone(searchText);
+                Customer residentialBusinessPhone = new Customer();
+                residentialBusinessPhone.setResidentialPhone(searchText);
+                examples.add(cellPhoneExample);
+                examples.add(businessPhoneExample);
+                examples.add(residentialBusinessPhone);
+                break;
+            case 1:
+                Customer cpfExample = new Customer();
+                cpfExample.setCpfCnpj(searchText);
+                examples.add(cpfExample);
+                break;
+            case 2:
+                Customer nameExample = new Customer();
+                nameExample.setName(searchText);
+                examples.add(nameExample);
+                break;
+        }
+        int found = searchListener.onCustomerSearch(examples, searchTextField.getText(), false);
+        if (found > 0) {
+            searchMessageLabel.setText(" ");
+        } else {
+            searchMessageLabel.setText("Nenhum cliente encontrado.");
+            emptyCustomer();
+        }
+    }//GEN-LAST:event_searchButtonActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MainWindow().setVisible(true);
-            }
-        });
-    }
+    private void incomingCallListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_incomingCallListValueChanged
+    }//GEN-LAST:event_incomingCallListValueChanged
+
+    private void incomingCallListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_incomingCallListMouseClicked
+        String selected = (String) incomingCallList.getSelectedValue();
+        StringBuilder number = new StringBuilder();
+        number.append(selected.substring(1, 3));
+        number.append(selected.substring(5, 13));
+        String numberString = number.toString();
+        List<Customer> examples = new ArrayList<>();
+        Customer cellPhoneExample = new Customer();
+        cellPhoneExample.setCellPhone(numberString);
+        Customer businessPhoneExample = new Customer();
+        businessPhoneExample.setBusinessPhone(numberString);
+        Customer residentialBusinessPhone = new Customer();
+        residentialBusinessPhone.setResidentialPhone(numberString);
+        examples.add(cellPhoneExample);
+        examples.add(businessPhoneExample);
+        examples.add(residentialBusinessPhone);
+        searchListener.onCustomerSearch(examples, number.toString(), false);
+    }//GEN-LAST:event_incomingCallListMouseClicked
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel addressLabel;
     private javax.swing.JLabel addressLabelFixed;
@@ -544,26 +622,28 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel cityLabelFixed;
     private javax.swing.JLabel corporateNameLabel;
     private javax.swing.JLabel corporateNameLabelFixed;
-    private javax.swing.JLabel cpfLabel;
-    private javax.swing.JLabel cpfLabelFixed;
+    private javax.swing.JLabel cpfCnpjLabel;
+    private javax.swing.JLabel cpfCnpjLabelFixed;
     private javax.swing.JLabel districtLabel;
     private javax.swing.JLabel districtLabelFixed;
     private javax.swing.JLabel emailLabel;
     private javax.swing.JLabel emailLabelFixed;
     private javax.swing.JLabel faxLabel;
     private javax.swing.JLabel faxLabelFixed;
+    private javax.swing.JMenu fileMenu;
     private javax.swing.JPanel formPanel;
     private javax.swing.JPanel headerPanel;
+    private javax.swing.JMenu helpMenu;
     private javax.swing.JPanel incomingCallHeaderPanel;
     private javax.swing.JLabel incomingCallLabel;
     private javax.swing.JList incomingCallList;
     private javax.swing.JPanel incomingCallMainPanel;
     private javax.swing.JScrollPane incomingCallScrollPane;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JLabel legalPersonLabel;
     private javax.swing.JLabel legalPersonLavelFixed;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JLabel municipalityLabel;
+    private javax.swing.JLabel municipalityLabelFixed;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JLabel observationLabelFixed;
     private javax.swing.JScrollPane observationScrollPannel;
@@ -580,17 +660,19 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel residentialPhoneLavelFixed;
     private javax.swing.JPanel rightSidePanel;
     private javax.swing.JButton searchButton;
-    private javax.swing.JComboBox searchDropDown;
+    private javax.swing.JComboBox searchComboBox;
     private javax.swing.JLabel searchLabel;
     private javax.swing.JLabel searchMessageLabel;
     private javax.swing.JPanel searchPanel;
     private javax.swing.JTextField searchTextField;
+    private javax.swing.JLabel stateAbbreviationLabel;
+    private javax.swing.JLabel stateAbbreviationLabelFixed;
     private javax.swing.JLabel versionLabel;
     // End of variables declaration//GEN-END:variables
 
-    public void setForm(Customer customer) {
+    public void populateCustomer(Customer customer) {
         nameLabel.setText(customer.getName());
-        cpfLabel.setText(customer.getCpf());
+        cpfCnpjLabel.setText(customer.getCpfCnpj());
         residentialPhoneLabel.setText(customer.getResidentialPhone());
         faxLabel.setText(customer.getFax());
         cellPhoneLabel.setText(customer.getCellPhone());
@@ -599,12 +681,49 @@ public class MainWindow extends javax.swing.JFrame {
         addressLabel.setText(customer.getAddress());
         districtLabel.setText(customer.getDistrict());
         cityLabel.setText(customer.getCity());
+        stateAbbreviationLabel.setText(customer.getStateAbbreviation());
+        districtLabel.setText(customer.getDistrict());
+        municipalityLabel.setText(customer.getMunicipality());
         businessPhoneLabel.setText(customer.getBusinessPhone());
         legalPersonLabel.setText(customer.getLegalPerson());
+        corporateNameLabel.setText(customer.getCorporateName());
         birthDateLabel.setText(customer.getBirthDate());
         recordLabel.setText(customer.getRecortDate());
         postLabel.setText(customer.getPost() ? "Sim" : "Não");
         problemsLabel.setText(customer.getProblems() ? "Sim" : "Não");
         observationTextPane.setText(customer.getObservation());
+    }
+
+    public void emptyCustomer() {
+        Customer customer = new Customer();
+        customer.setName("<Cliente não encontrado>");
+        customer.setAddress("---");
+        customer.setBirthDate("--/--/----");
+        customer.setBusinessPhone("(--) --------");
+        customer.setCellPhone("(--) --------");
+        customer.setCity("---");
+        customer.setCorporateName("---");
+        customer.setCpfCnpj("---");
+        customer.setDistrict("---");
+        customer.setEmail("---");
+        customer.setFax("(--) --------");
+        customer.setLegalPerson("---");
+        customer.setMunicipality("---");
+        customer.setObservation("");
+        customer.setPost(false);
+        customer.setProblems(false);
+        customer.setRecortDate("--/--/----");
+        customer.setResidentialPhone("(--) --------");
+        customer.setStateAbbreviation("---");
+        populateCustomer(customer);
+    }
+
+    public void appendRecentCall(String recentCall) {
+        DefaultListModel listModel = new DefaultListModel();
+        listModel.addElement(recentCall);
+        for (int i = 0; i < incomingCallList.getModel().getSize(); i++) {
+            listModel.addElement(incomingCallList.getModel().getElementAt(i));
+        }
+        incomingCallList.setModel(listModel);
     }
 }

@@ -17,7 +17,8 @@ public class Customer implements Serializable {
     @GeneratedValue
     private long id;
     private String name;
-    private String cpf;
+    @Column(name = "cpf_cnpj")
+    private String cpfCnpj;
     @Column(name = "residential_phone")
     private String residentialPhone;
     private String fax;
@@ -29,6 +30,9 @@ public class Customer implements Serializable {
     private String address;
     private String district;
     private String city;
+    @Column(name = "state_abbreviation")
+    private String stateAbbreviation;
+    private String municipality;
     @Column(name = "business_phone")
     private String businessPhone;
     @Column(name = "birth_date")
@@ -45,17 +49,19 @@ public class Customer implements Serializable {
     public Customer() {
     }
 
-    public Customer(long id, String name, String cpf, String residentialPhone, String fax, String cellPhone, String email, String corporateName, String address, String city, String businessPhone, String birthDate, String legalPerson, String recortDate, Boolean post, Boolean problems, String observation) {
-        this.id = id;
+    public Customer(String name, String cpfCnpj, String residentialPhone, String fax, String cellPhone, String email, String corporateName, String address, String district, String city, String stateAbbreviation, String municipality, String businessPhone, String birthDate, String legalPerson, String recortDate, Boolean post, Boolean problems, String observation) {
         this.name = name;
-        this.cpf = cpf;
+        this.cpfCnpj = cpfCnpj;
         this.residentialPhone = residentialPhone;
         this.fax = fax;
         this.cellPhone = cellPhone;
         this.email = email;
         this.corporateName = corporateName;
         this.address = address;
+        this.district = district;
         this.city = city;
+        this.stateAbbreviation = stateAbbreviation;
+        this.municipality = municipality;
         this.businessPhone = businessPhone;
         this.birthDate = birthDate;
         this.legalPerson = legalPerson;
@@ -81,12 +87,12 @@ public class Customer implements Serializable {
         this.name = name;
     }
 
-    public String getCpf() {
-        return cpf;
+    public String getCpfCnpj() {
+        return cpfCnpj;
     }
 
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
+    public void setCpfCnpj(String cpfCnpj) {
+        this.cpfCnpj = cpfCnpj;
     }
 
     public String getResidentialPhone() {
@@ -151,6 +157,22 @@ public class Customer implements Serializable {
 
     public void setCity(String city) {
         this.city = city;
+    }
+    
+    public String getMunicipality() {
+        return municipality;
+    }    
+    
+    public void setMunicipality(String municipality) {
+        this.municipality = municipality;
+    }    
+
+    public String getStateAbbreviation() {
+        return stateAbbreviation;
+    }
+
+    public void setStateAbbreviation(String stateAbbreviation) {
+        this.stateAbbreviation = stateAbbreviation;
     }
 
     public String getBusinessPhone() {
