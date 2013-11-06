@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TimeZone;
 import java.util.TooManyListenersException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.MainWindow;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
@@ -33,9 +35,7 @@ import serialclient.SerialClientException;
 public class Main implements PhoneNumberReadyListener, CustomerSearcher {
 
     final private static String TIME_ZONE_ID = "Brazil/East";
-    final private static String PROPERTIES_FILE = "src/config.properties";
 
-    private static Properties properties;
     private SessionFactory sessionFactory;
     private Session session;
     private IncomingCallDAO incomingCallDAO;
@@ -44,9 +44,6 @@ public class Main implements PhoneNumberReadyListener, CustomerSearcher {
 
     public static void main(String[] args) throws
             FileNotFoundException, IOException, NoSuchPortException, PortInUseException, UnsupportedCommOperationException, TooManyListenersException, SerialClientException {
-
-        properties = new Properties();
-        properties.load(new FileInputStream(new File(PROPERTIES_FILE)));
         Main mainApp = new Main();
         mainApp.setup();
     }
@@ -60,7 +57,7 @@ public class Main implements PhoneNumberReadyListener, CustomerSearcher {
             sessionFactory = c.buildSessionFactory();
             session = sessionFactory.openSession();
         } catch (HibernateException ex) {
-            System.err.println("Failed to create sessionFactory object." + ex);
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, "Failed to create sessionFactory object.", ex);
             throw new ExceptionInInitializerError(ex);
         }
 
@@ -69,7 +66,7 @@ public class Main implements PhoneNumberReadyListener, CustomerSearcher {
 
         incomingCallDAO = (IncomingCallDAO) daoFactory.getNewDAO(IncomingCallHibernateDAO.class);
         customerDAO = (CustomerDAO) daoFactory.getNewDAO(CustomerHibernateDAO.class);
-        
+
         final Main instance = this;
         PhoneLineWatcher incomingCallListener = new PhoneLineWatcher(instance);
 
@@ -84,34 +81,27 @@ public class Main implements PhoneNumberReadyListener, CustomerSearcher {
 
     }
 
-    public static Properties getProperties() {
-        return properties;
-    }
-
     @Override
     public void processPhoneNumber(String number) {
         Map<String, String> propertiesMap = new HashMap<>();
         propertiesMap.put(Customer.CELL_PHONE_COLUMN, number);
         propertiesMap.put(Customer.BUSINESS_PHONE_COLUMN, number);
         propertiesMap.put(Customer.RESIDENTIAL_PHONE_COLUMN, number);
-        System.out.println(propertiesMap);
         searchAndPopulateByProperties(propertiesMap, true);
     }
 
     private int searchAndPopulateByProperties(Map<String, String> propertiesMap, boolean showRecentCall) {
         List<Customer> customers = customerDAO.findByAttributes(propertiesMap);
-        if (customers != null && !customers.isEmpty()) {
-            String recentCallText = null;
-            if (showRecentCall && propertiesMap.containsKey(Customer.CELL_PHONE_COLUMN)) {
-                String phone = propertiesMap.get(Customer.CELL_PHONE_COLUMN);
-                recentCallText = getRecentCallText(phone);
-            }
-            window.addRecentCaller(customers.get(0), recentCallText);
-            return customers.size();
-        } else {
-            window.emptyCustomer();
+        String recentCallText = null;
+        if (showRecentCall && propertiesMap.containsKey(Customer.CELL_PHONE_COLUMN)) {
+            String phone = propertiesMap.get(Customer.CELL_PHONE_COLUMN);
+            recentCallText = getRecentCallText(phone);
         }
-        return 0;
+        int size = customers.size();
+        Customer customer = size > 0 ? customers.get(0) : null;
+        VoiceRecorder.startRecording(customer, recentCallText);
+        window.addRecentCaller(customer, recentCallText);
+        return size;
     }
 
     private String getRecentCallText(String phone) {

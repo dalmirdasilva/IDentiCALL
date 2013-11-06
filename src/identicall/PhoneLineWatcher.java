@@ -75,7 +75,34 @@ public class PhoneLineWatcher implements SerialPortEventListener {
 
     private void connectSerialClient() throws
             NoSuchPortException, PortInUseException, UnsupportedCommOperationException, TooManyListenersException, IOException, SerialClientException {
-        serialClient.connect(Main.getProperties().getProperty(SERIAL_PORT_PATH_PROPERTY));
-        serialClient.addSerialPortEventListener(this);
+
+        //serialClient.connect(AppProperties.getProperties().getProperty(SERIAL_PORT_PATH_PROPERTY));
+        //serialClient.addSerialPortEventListener(this);
+        
+        new Thread() {
+
+            @Override
+            public void run() {
+
+                String[] numbers = new String[]{
+                    "5599887766",
+                    "5599254645",
+                    "5599999999",
+                    "5555414558"
+                };
+                int i = 0;
+                while (true) {
+                    String number = numbers[i++ % numbers.length];
+                    System.out.println(number);
+                    try {
+                        Thread.sleep(5000);
+                        phoneNumberReadyListener.processPhoneNumber(number);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(PhoneLineWatcher.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }.start();
+
     }
 }

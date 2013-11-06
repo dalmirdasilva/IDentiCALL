@@ -1,19 +1,16 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package model;
 
 import entity.Customer;
 import identicall.CustomerSearcher;
+import identicall.VoiceRecorder;
+import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 
-/**
- *
- * @author dalmir
- */
 public class MainWindow extends javax.swing.JFrame {
 
     static {
@@ -33,6 +30,7 @@ public class MainWindow extends javax.swing.JFrame {
     final private static String MESSAGE_MINIMUM_SEARCH_CHARS = "Preencha o campo.";
     private final CustomerSearcher customerSearcher;
     private Map<String, Customer> recentCallers;
+    private Thread recortTimerThread;
 
     /**
      * Creates new form MainWindow
@@ -41,6 +39,7 @@ public class MainWindow extends javax.swing.JFrame {
      */
     public MainWindow(CustomerSearcher customerSearcher) {
         initComponents();
+        
         this.customerSearcher = customerSearcher;
         this.recentCallers = new HashMap<>();
     }
@@ -55,9 +54,15 @@ public class MainWindow extends javax.swing.JFrame {
     private void initComponents() {
 
         headerPanel = new javax.swing.JPanel();
-        projectLabel = new javax.swing.JLabel();
+        rightPanel = new javax.swing.JPanel();
         projectDescriptionLabel = new javax.swing.JLabel();
+        projectLabel = new javax.swing.JLabel();
         versionLabel = new javax.swing.JLabel();
+        leftPanel = new javax.swing.JPanel();
+        recordFixedLabel = new javax.swing.JLabel();
+        recordButton = new javax.swing.JButton();
+        recordTimeLabel = new javax.swing.JLabel();
+        recordStatusLabel = new javax.swing.JLabel();
         rightSidePanel = new javax.swing.JPanel();
         incomingCallHeaderPanel = new javax.swing.JPanel();
         incomingCallLabel = new javax.swing.JLabel();
@@ -111,45 +116,104 @@ public class MainWindow extends javax.swing.JFrame {
         municipalityLabelFixed = new javax.swing.JLabel();
         municipalityLabel = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
-        fileMenu = new javax.swing.JMenu();
+        fileMenuItem = new javax.swing.JMenu();
+        autoRecordMenuItem = new javax.swing.JMenuItem();
+        exitMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
+        jMenuItem2 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
-        getContentPane().setLayout(new java.awt.BorderLayout());
 
         headerPanel.setBackground(new java.awt.Color(201, 208, 209));
-        headerPanel.setPreferredSize(new java.awt.Dimension(762, 60));
+        headerPanel.setLayout(new java.awt.BorderLayout());
+
+        rightPanel.setPreferredSize(new java.awt.Dimension(550, 50));
+
+        projectDescriptionLabel.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
+        projectDescriptionLabel.setText("Identificação de Chamadas");
 
         projectLabel.setFont(new java.awt.Font("Ubuntu", 1, 30)); // NOI18N
         projectLabel.setText("IDentiCALL");
 
-        projectDescriptionLabel.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
-        projectDescriptionLabel.setText("Identificação de Chamadas");
-
         versionLabel.setFont(new java.awt.Font("DejaVu Sans", 0, 10)); // NOI18N
         versionLabel.setText("BETA");
 
-        javax.swing.GroupLayout headerPanelLayout = new javax.swing.GroupLayout(headerPanel);
-        headerPanel.setLayout(headerPanelLayout);
-        headerPanelLayout.setHorizontalGroup(
-            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(headerPanelLayout.createSequentialGroup()
+        javax.swing.GroupLayout rightPanelLayout = new javax.swing.GroupLayout(rightPanel);
+        rightPanel.setLayout(rightPanelLayout);
+        rightPanelLayout.setHorizontalGroup(
+            rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(projectLabel)
+                .addComponent(projectLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(projectDescriptionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(versionLabel)
-                .addContainerGap(722, Short.MAX_VALUE))
+                .addContainerGap(94, Short.MAX_VALUE))
         );
-        headerPanelLayout.setVerticalGroup(
-            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(projectLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE)
-                .addComponent(projectDescriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(versionLabel))
+        rightPanelLayout.setVerticalGroup(
+            rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(rightPanelLayout.createSequentialGroup()
+                .addGroup(rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(rightPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(projectDescriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(versionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(11, 11, 11))
+                    .addComponent(projectLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
+
+        headerPanel.add(rightPanel, java.awt.BorderLayout.LINE_START);
+
+        leftPanel.setPreferredSize(new java.awt.Dimension(500, 50));
+
+        recordFixedLabel.setText("Status da gravação:");
+        recordFixedLabel.setToolTipText("");
+
+        recordButton.setText("Parar gravação");
+        recordButton.setEnabled(false);
+        recordButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                recordButtonActionPerformed(evt);
+            }
+        });
+
+        recordTimeLabel.setText("00h00m00s");
+
+        recordStatusLabel.setBackground(new java.awt.Color(205, 187, 203));
+        recordStatusLabel.setText("Parado");
+
+        javax.swing.GroupLayout leftPanelLayout = new javax.swing.GroupLayout(leftPanel);
+        leftPanel.setLayout(leftPanelLayout);
+        leftPanelLayout.setHorizontalGroup(
+            leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(leftPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(recordFixedLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(recordStatusLabel)
+                .addGap(10, 10, 10)
+                .addComponent(recordButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(recordTimeLabel)
+                .addGap(18, 18, 18))
+        );
+        leftPanelLayout.setVerticalGroup(
+            leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, leftPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(recordFixedLabel)
+                    .addComponent(recordButton)
+                    .addComponent(recordTimeLabel)
+                    .addComponent(recordStatusLabel))
+                .addContainerGap())
+        );
+
+        headerPanel.add(leftPanel, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(headerPanel, java.awt.BorderLayout.PAGE_START);
 
@@ -158,7 +222,6 @@ public class MainWindow extends javax.swing.JFrame {
         rightSidePanel.setLayout(new java.awt.BorderLayout());
 
         incomingCallHeaderPanel.setBackground(new java.awt.Color(232, 232, 232));
-        incomingCallHeaderPanel.setPreferredSize(new java.awt.Dimension(250, 36));
 
         incomingCallLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         incomingCallLabel.setText("Ligações recentes");
@@ -174,7 +237,7 @@ public class MainWindow extends javax.swing.JFrame {
         );
         incomingCallHeaderPanelLayout.setVerticalGroup(
             incomingCallHeaderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(incomingCallLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
+            .addComponent(incomingCallLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
         );
 
         rightSidePanel.add(incomingCallHeaderPanel, java.awt.BorderLayout.PAGE_START);
@@ -207,7 +270,7 @@ public class MainWindow extends javax.swing.JFrame {
         );
         incomingCallMainPanelLayout.setVerticalGroup(
             incomingCallMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(incomingCallScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE)
+            .addComponent(incomingCallScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 521, Short.MAX_VALUE)
         );
 
         rightSidePanel.add(incomingCallMainPanel, java.awt.BorderLayout.CENTER);
@@ -225,10 +288,20 @@ public class MainWindow extends javax.swing.JFrame {
         searchLabel.setText("Pesquisar:");
 
         searchMessageLabel.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
-        searchMessageLabel.setText("   ");
+        searchMessageLabel.setText(" ");
 
         searchTextField.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
         searchTextField.setPreferredSize(new java.awt.Dimension(73, 25));
+        searchTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchTextFieldActionPerformed(evt);
+            }
+        });
+        searchTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                searchTextFieldKeyPressed(evt);
+            }
+        });
 
         searchComboBox.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
         searchComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Telefone", "CPF/CNPF", "Nome" }));
@@ -250,15 +323,15 @@ public class MainWindow extends javax.swing.JFrame {
             .addGroup(searchPanelLayout.createSequentialGroup()
                 .addGap(6, 6, 6)
                 .addComponent(searchLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(6, 6, 6)
                 .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(searchComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(searchMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(searchMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
+                .addGap(77, 77, 77))
         );
         searchPanelLayout.setVerticalGroup(
             searchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -441,7 +514,7 @@ public class MainWindow extends javax.swing.JFrame {
                                 .addComponent(faxLabelFixed)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(faxLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 147, Short.MAX_VALUE))
+                                .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(formPanelLayout.createSequentialGroup()
                                 .addComponent(addressLabelFixed)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -533,7 +606,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(observationLabelFixed)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(observationScrollPannel, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
+                .addComponent(observationScrollPannel, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -541,14 +614,34 @@ public class MainWindow extends javax.swing.JFrame {
 
         getContentPane().add(bodyPanel, java.awt.BorderLayout.CENTER);
 
-        menuBar.setBackground(new java.awt.Color(254, 254, 254));
+        fileMenuItem.setText("Arquivo");
+        fileMenuItem.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
 
-        fileMenu.setText("Arquivo");
-        fileMenu.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
-        menuBar.add(fileMenu);
+        autoRecordMenuItem.setText("Gravação Automática");
+        autoRecordMenuItem.setToolTipText("");
+        autoRecordMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                autoRecordMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenuItem.add(autoRecordMenuItem);
+
+        exitMenuItem.setText("Sair");
+        exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenuItem.add(exitMenuItem);
+
+        menuBar.add(fileMenuItem);
 
         helpMenu.setText("Ajuda");
         helpMenu.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
+
+        jMenuItem2.setText("Sobre");
+        helpMenu.add(jMenuItem2);
+
         menuBar.add(helpMenu);
 
         setJMenuBar(menuBar);
@@ -595,11 +688,42 @@ public class MainWindow extends javax.swing.JFrame {
         Customer customer = recentCallers.get(selected);
         if (customer != null) {
             populateCustomer(customer);
+        } else {
+            emptyCustomer();
         }
     }//GEN-LAST:event_incomingCallListMouseClicked
+
+    private void autoRecordMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoRecordMenuItemActionPerformed
+        try {
+            VoiceRecorder.toggleAutoRecording();
+        } catch (IOException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, "", ex);
+        }
+    }//GEN-LAST:event_autoRecordMenuItemActionPerformed
+
+    private void recordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recordButtonActionPerformed
+        VoiceRecorder.stopRecording();
+        recordButton.setEnabled(false);
+        recordStatusLabel.setText("Parado");
+    }//GEN-LAST:event_recordButtonActionPerformed
+
+    private void searchTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchTextFieldActionPerformed
+    }//GEN-LAST:event_searchTextFieldActionPerformed
+
+    private void searchTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTextFieldKeyPressed
+        if (evt.getKeyChar() == KeyEvent.VK_ENTER) {
+            searchButtonActionPerformed(null);
+        }
+    }//GEN-LAST:event_searchTextFieldKeyPressed
+
+    private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_exitMenuItemActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel addressLabel;
     private javax.swing.JLabel addressLabelFixed;
+    private javax.swing.JMenuItem autoRecordMenuItem;
     private javax.swing.JLabel birthDateLabel;
     private javax.swing.JLabel birthDateLabelFixed;
     private javax.swing.JPanel bodyPanel;
@@ -617,9 +741,10 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel districtLabelFixed;
     private javax.swing.JLabel emailLabel;
     private javax.swing.JLabel emailLabelFixed;
+    private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JLabel faxLabel;
     private javax.swing.JLabel faxLabelFixed;
-    private javax.swing.JMenu fileMenu;
+    private javax.swing.JMenu fileMenuItem;
     private javax.swing.JPanel formPanel;
     private javax.swing.JPanel headerPanel;
     private javax.swing.JMenu helpMenu;
@@ -628,6 +753,8 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JList incomingCallList;
     private javax.swing.JPanel incomingCallMainPanel;
     private javax.swing.JScrollPane incomingCallScrollPane;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JPanel leftPanel;
     private javax.swing.JLabel legalPersonLabel;
     private javax.swing.JLabel legalPersonLavelFixed;
     private javax.swing.JMenuBar menuBar;
@@ -643,10 +770,15 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel problemsLabelFixed;
     private javax.swing.JLabel projectDescriptionLabel;
     private javax.swing.JLabel projectLabel;
+    private javax.swing.JButton recordButton;
+    private javax.swing.JLabel recordFixedLabel;
     private javax.swing.JLabel recordLabel;
     private javax.swing.JLabel recordLabelFixed;
+    private javax.swing.JLabel recordStatusLabel;
+    private javax.swing.JLabel recordTimeLabel;
     private javax.swing.JLabel residentialPhoneLabel;
     private javax.swing.JLabel residentialPhoneLavelFixed;
+    private javax.swing.JPanel rightPanel;
     private javax.swing.JPanel rightSidePanel;
     private javax.swing.JButton searchButton;
     private javax.swing.JComboBox searchComboBox;
@@ -707,14 +839,31 @@ public class MainWindow extends javax.swing.JFrame {
         populateCustomer(customer);
     }
 
-    public void addRecentCaller(Customer caller, String showRecentCallList) {
+    public void addRecentCaller(Customer caller, String recentCallText) {
         if (caller != null) {
             populateCustomer(caller);
-            if (showRecentCallList != null) {
-                recentCallers.put(showRecentCallList, caller);
-                appendCallerList(showRecentCallList);
-            }
+        } else {
+            emptyCustomer();
         }
+        if (recentCallText != null) {
+            recentCallers.put(recentCallText, caller);
+            appendCallerList(recentCallText);
+        }
+        if (VoiceRecorder.isRecording()) {
+            recordButton.setEnabled(true);
+            recordStatusLabel.setText("Gravando");
+        }
+    }
+    
+    public void startRecordTimer() {
+        recortTimerThread = new Thread() {
+            
+            @Override
+            public void run() {
+                
+            }
+        };
+        recortTimerThread.start();
     }
 
     public void appendCallerList(String text) {
@@ -724,5 +873,6 @@ public class MainWindow extends javax.swing.JFrame {
             listModel.addElement(incomingCallList.getModel().getElementAt(i));
         }
         incomingCallList.setModel(listModel);
+        incomingCallList.setSelectedIndex(0);
     }
 }
