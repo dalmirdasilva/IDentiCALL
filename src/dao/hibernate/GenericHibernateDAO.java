@@ -4,6 +4,7 @@ import dao.GenericDAO;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
+import java.util.Map;
 import org.hibernate.Criteria;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
@@ -76,6 +77,21 @@ public abstract class GenericHibernateDAO<T, K extends Serializable>
                 or.add(example);
             }
             criteria.add(or);
+        }
+        List<T> list = criteria.list();
+        return list;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<T> findByAttributes(Map<String, String> attributeMap) {
+        Criteria criteria = session.createCriteria(getPersistentClass());
+        if (attributeMap != null) {
+            Disjunction disjunction = Restrictions.disjunction();
+            for (Map.Entry<String, String> entry : attributeMap.entrySet()) {
+                disjunction.add(Restrictions.like(entry.getKey(), "%" + entry.getValue() + "%"));
+            }
+            criteria.add(disjunction);
         }
         List<T> list = criteria.list();
         return list;

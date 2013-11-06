@@ -10,6 +10,12 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "customer")
 public class Customer implements Serializable {
+    
+    final public static String CELL_PHONE_COLUMN = "cellPhone";
+    final public static String BUSINESS_PHONE_COLUMN = "businessPhone";
+    final public static String RESIDENTIAL_PHONE_COLUMN = "residentialPhone";
+    final public static String CPF_CNPJ_COLUMN = "cpfCnpj";
+    final public static String NAME_COLUMN = "name";
 
     @Id
     @GeneratedValue

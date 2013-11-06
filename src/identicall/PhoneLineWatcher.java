@@ -12,22 +12,28 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import serialclient.SerialClientException;
 
-public class IncomingCallReader implements SerialPortEventListener {
+public class PhoneLineWatcher implements SerialPortEventListener {
 
+    final private static String READY_INITIAL_MARK = "OK";
     final private static char END_NUMBER_MARK = '\n';
-    private SerialClient serialClient;
-    private PhoneNumberReadyListener phoneNumberReadyListener;
-    private char[] incomingBuffer = new char[20];
+    final private static int PHONE_NUMBER_BUFFER_SIZE = 20;
+    final public static String SERIAL_PORT_PATH_PROPERTY = "serialportpath";
+    final public static String SERIAL_PORT_NAME_PROPERTY = "serialportname";
+
+    private final SerialClient serialClient;
+    private final PhoneNumberReadyListener phoneNumberReadyListener;
+    private final char[] incomingBuffer = new char[PHONE_NUMBER_BUFFER_SIZE];
     private int incomingBufferPoiter = 0;
 
-    public IncomingCallReader(PhoneNumberReadyListener phoneNumberReadyListener) throws
-            NoSuchPortException, PortInUseException, UnsupportedCommOperationException, TooManyListenersException, IOException {
+    public PhoneLineWatcher(PhoneNumberReadyListener phoneNumberReadyListener) throws
+            NoSuchPortException, PortInUseException, UnsupportedCommOperationException, TooManyListenersException, IOException, SerialClientException {
         this.serialClient = new SerialClient();
         this.phoneNumberReadyListener = phoneNumberReadyListener;
         try {
             connectSerialClient();
-        } catch (SerialClientException ex) {
-            Logger.getLogger(IncomingCallReader.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SerialClientException | NoSuchPortException ex) {
+            DiagnosticRunner.runDiagnostic();
+            connectSerialClient();
         }
     }
 
@@ -45,13 +51,13 @@ public class IncomingCallReader implements SerialPortEventListener {
             case SerialPortEvent.OUTPUT_BUFFER_EMPTY:
                 break;
             case SerialPortEvent.DATA_AVAILABLE:
-                int input = 0;
                 try {
+                    int input = 0;
                     while ((input = serialClient.getInputStream().read()) != -1) {
-                        if (input == END_NUMBER_MARK || incomingBufferPoiter >= 20) {
+                        if (input == END_NUMBER_MARK || incomingBufferPoiter >= PHONE_NUMBER_BUFFER_SIZE) {
                             if (phoneNumberReadyListener != null) {
                                 String phone = String.copyValueOf(incomingBuffer, 0, incomingBufferPoiter);
-                                if (!phone.startsWith("OK")) {
+                                if (!phone.startsWith(READY_INITIAL_MARK)) {
                                     phoneNumberReadyListener.processPhoneNumber(phone);
                                 }
                             }
@@ -61,7 +67,7 @@ public class IncomingCallReader implements SerialPortEventListener {
                         }
                     }
                 } catch (IOException | SerialClientException ex) {
-                    Logger.getLogger(IncomingCallReader.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PhoneLineWatcher.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 break;
         }
@@ -69,7 +75,7 @@ public class IncomingCallReader implements SerialPortEventListener {
 
     private void connectSerialClient() throws
             NoSuchPortException, PortInUseException, UnsupportedCommOperationException, TooManyListenersException, IOException, SerialClientException {
-        serialClient.connect("/dev/ttyACM0");
+        serialClient.connect(Main.getProperties().getProperty(SERIAL_PORT_PATH_PROPERTY));
         serialClient.addSerialPortEventListener(this);
     }
 }

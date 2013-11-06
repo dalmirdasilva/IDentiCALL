@@ -5,9 +5,9 @@
 package model;
 
 import entity.Customer;
-import identicall.CustomerSearchListener;
-import java.util.ArrayList;
-import java.util.List;
+import identicall.CustomerSearcher;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.DefaultListModel;
 
 /**
@@ -28,14 +28,21 @@ public class MainWindow extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
     }
-    private CustomerSearchListener searchListener;
+    final private static int MINIMUM_SEARCH_CHARS = 3;
+    final private static String MESSAGE_NO_CLIENT_FOUND = "Nenhum cliente encontrado.";
+    final private static String MESSAGE_MINIMUM_SEARCH_CHARS = "Preencha o campo.";
+    private final CustomerSearcher customerSearcher;
+    private Map<String, Customer> recentCallers;
 
     /**
      * Creates new form MainWindow
+     *
+     * @param customerSearcher
      */
-    public MainWindow(CustomerSearchListener searchListener) {
+    public MainWindow(CustomerSearcher customerSearcher) {
         initComponents();
-        this.searchListener = searchListener;
+        this.customerSearcher = customerSearcher;
+        this.recentCallers = new HashMap<>();
     }
 
     /**
@@ -551,42 +558,31 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
         String searchText = searchTextField.getText();
-        if (searchText.length() < 3) {
-            searchMessageLabel.setText("Preencha o campo.");
+        if (searchText.length() < MINIMUM_SEARCH_CHARS) {
+            searchMessageLabel.setText(MESSAGE_MINIMUM_SEARCH_CHARS);
             return;
         }
-        
-        searchText = "%" + searchText + "%";
+
         int selectedIndex = searchComboBox.getSelectedIndex();
-        List<Customer> examples = new ArrayList<>();
+        Map<String, String> properties = new HashMap<>();
         switch (selectedIndex) {
             case 0:
-                Customer cellPhoneExample = new Customer();
-                cellPhoneExample.setCellPhone(searchText);
-                Customer businessPhoneExample = new Customer();
-                businessPhoneExample.setBusinessPhone(searchText);
-                Customer residentialBusinessPhone = new Customer();
-                residentialBusinessPhone.setResidentialPhone(searchText);
-                examples.add(cellPhoneExample);
-                examples.add(businessPhoneExample);
-                examples.add(residentialBusinessPhone);
+                properties.put(Customer.BUSINESS_PHONE_COLUMN, searchText);
+                properties.put(Customer.CELL_PHONE_COLUMN, searchText);
+                properties.put(Customer.RESIDENTIAL_PHONE_COLUMN, searchText);
                 break;
             case 1:
-                Customer cpfExample = new Customer();
-                cpfExample.setCpfCnpj(searchText);
-                examples.add(cpfExample);
+                properties.put(Customer.CPF_CNPJ_COLUMN, searchText);
                 break;
             case 2:
-                Customer nameExample = new Customer();
-                nameExample.setName(searchText);
-                examples.add(nameExample);
+                properties.put(Customer.NAME_COLUMN, searchText);
                 break;
         }
-        int found = searchListener.onCustomerSearch(examples, searchTextField.getText(), false);
-        if (found > 0) {
+        int howMany = customerSearcher.searchCustomer(properties, false);
+        if (howMany > 0) {
             searchMessageLabel.setText(" ");
         } else {
-            searchMessageLabel.setText("Nenhum cliente encontrado.");
+            searchMessageLabel.setText(MESSAGE_NO_CLIENT_FOUND);
             emptyCustomer();
         }
     }//GEN-LAST:event_searchButtonActionPerformed
@@ -596,22 +592,9 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void incomingCallListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_incomingCallListMouseClicked
         String selected = (String) incomingCallList.getSelectedValue();
-        if (selected != null && selected.length() >= 12) {
-            StringBuilder number = new StringBuilder();
-            number.append(selected.substring(1, 3));
-            number.append(selected.substring(5, 13));
-            String numberString = number.toString();
-            List<Customer> examples = new ArrayList<>();
-            Customer cellPhoneExample = new Customer();
-            cellPhoneExample.setCellPhone(numberString);
-            Customer businessPhoneExample = new Customer();
-            businessPhoneExample.setBusinessPhone(numberString);
-            Customer residentialBusinessPhone = new Customer();
-            residentialBusinessPhone.setResidentialPhone(numberString);
-            examples.add(cellPhoneExample);
-            examples.add(businessPhoneExample);
-            examples.add(residentialBusinessPhone);
-            searchListener.onCustomerSearch(examples, number.toString(), false);
+        Customer customer = recentCallers.get(selected);
+        if (customer != null) {
+            populateCustomer(customer);
         }
     }//GEN-LAST:event_incomingCallListMouseClicked
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -724,9 +707,19 @@ public class MainWindow extends javax.swing.JFrame {
         populateCustomer(customer);
     }
 
-    public void appendRecentCall(String recentCall) {
+    public void addRecentCaller(Customer caller, String showRecentCallList) {
+        if (caller != null) {
+            populateCustomer(caller);
+            if (showRecentCallList != null) {
+                recentCallers.put(showRecentCallList, caller);
+                appendCallerList(showRecentCallList);
+            }
+        }
+    }
+
+    public void appendCallerList(String text) {
         DefaultListModel listModel = new DefaultListModel();
-        listModel.addElement(recentCall);
+        listModel.addElement(text);
         for (int i = 0; i < incomingCallList.getModel().getSize(); i++) {
             listModel.addElement(incomingCallList.getModel().getElementAt(i));
         }
