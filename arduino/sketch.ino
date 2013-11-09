@@ -56,6 +56,9 @@ void readDigit() {
 
 void processDigit(unsigned char digit) {
   unsigned long rightNow = millis();
+  Serial.print("Digit: ");
+  Serial.println(digit, HEX);
+
   if (rightNow - lastDigitTime > maxAcceptableTimeBetweenDigits) {
     discardBuffer();
   }

@@ -82,7 +82,7 @@ public class Main implements PhoneNumberReadyListener, CustomerSearcher {
     public void processPhoneNumber(String number) {
         Map<String, String> propertiesMap = new HashMap<>();
         propertiesMap.put(Customer.CELL_PHONE_COLUMN, number);
-        propertiesMap.put(Customer.BUSINESS_PHONE_COLUMN, number);
+        propertiesMap.put(Customer.PRIMARY_BUSINESS_PHONE_COLUMN, number);
         propertiesMap.put(Customer.RESIDENTIAL_PHONE_COLUMN, number);
         searchAndPopulateByProperties(propertiesMap, true);
     }

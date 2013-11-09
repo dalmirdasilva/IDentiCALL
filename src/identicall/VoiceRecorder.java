@@ -24,6 +24,7 @@ public class VoiceRecorder {
         System.out.println("disableAutoRecording");
         AppProperties.getProperties().setProperty(AUTO_RECORD_PROPERTY, "false");
         enabled = false;
+        stopRecording();
     }
     
     public static void enableAutoRecording() throws IOException {
@@ -51,7 +52,7 @@ public class VoiceRecorder {
     }
 
     public static void stopRecording() {
-        if (enabled && recording) {
+        if (recording) {
             recording = false;
             System.out.println("should stop recording");
         }

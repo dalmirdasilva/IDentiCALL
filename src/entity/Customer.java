@@ -12,7 +12,8 @@ import javax.persistence.Table;
 public class Customer implements Serializable {
     
     final public static String CELL_PHONE_COLUMN = "cellPhone";
-    final public static String BUSINESS_PHONE_COLUMN = "businessPhone";
+    final public static String PRIMARY_BUSINESS_PHONE_COLUMN = "primaryBusinessPhone";
+    final public static String SECONDARY_BUSINESS_PHONE_COLUMN = "secondaryBusinessPhone";
     final public static String RESIDENTIAL_PHONE_COLUMN = "residentialPhone";
     final public static String CPF_CNPJ_COLUMN = "cpfCnpj";
     final public static String NAME_COLUMN = "name";
@@ -37,8 +38,10 @@ public class Customer implements Serializable {
     @Column(name = "state_abbreviation")
     private String stateAbbreviation;
     private String municipality;
-    @Column(name = "business_phone")
-    private String businessPhone;
+    @Column(name = "primary_business_phone")
+    private String primaryBusinessPhone;
+    @Column(name = "secondary_business_phone")
+    private String secondaryBusinessPhone;
     @Column(name = "birth_date")
     private String birthDate;
     @Column(name = "legal_person")
@@ -53,7 +56,7 @@ public class Customer implements Serializable {
     public Customer() {
     }
 
-    public Customer(String name, String cpfCnpj, String residentialPhone, String fax, String cellPhone, String email, String corporateName, String address, String district, String city, String stateAbbreviation, String municipality, String businessPhone, String birthDate, String legalPerson, String recortDate, Boolean post, Boolean problems, String observation) {
+    public Customer(String name, String cpfCnpj, String residentialPhone, String fax, String cellPhone, String email, String corporateName, String address, String district, String city, String stateAbbreviation, String municipality, String primaryBusinessPhone, String secondaryBusinessPhone, String birthDate, String legalPerson, String recortDate, Boolean post, Boolean problems, String observation) {
         this.name = name;
         this.cpfCnpj = cpfCnpj;
         this.residentialPhone = residentialPhone;
@@ -66,7 +69,8 @@ public class Customer implements Serializable {
         this.city = city;
         this.stateAbbreviation = stateAbbreviation;
         this.municipality = municipality;
-        this.businessPhone = businessPhone;
+        this.primaryBusinessPhone = primaryBusinessPhone;
+        this.secondaryBusinessPhone = secondaryBusinessPhone;
         this.birthDate = birthDate;
         this.legalPerson = legalPerson;
         this.recortDate = recortDate;
@@ -179,12 +183,20 @@ public class Customer implements Serializable {
         this.stateAbbreviation = stateAbbreviation;
     }
 
-    public String getBusinessPhone() {
-        return businessPhone;
+    public String getPrimaryBusinessPhone() {
+        return primaryBusinessPhone;
     }
 
-    public void setBusinessPhone(String businessPhone) {
-        this.businessPhone = businessPhone;
+    public void setPrimaryBusinessPhone(String primaryBusinessPhone) {
+        this.primaryBusinessPhone = primaryBusinessPhone;
+    }
+
+    public String getSecondaryBusinessPhone() {
+        return secondaryBusinessPhone;
+    }
+
+    public void setSecondaryBusinessPhone(String secondaryBusinessPhone) {
+        this.secondaryBusinessPhone = secondaryBusinessPhone;
     }
 
     public String getBirthDate() {
