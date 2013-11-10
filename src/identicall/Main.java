@@ -96,7 +96,11 @@ public class Main implements PhoneNumberReadyListener, CustomerSearcher {
         }
         int size = customers.size();
         Customer customer = size > 0 ? customers.get(0) : null;
-        VoiceRecorder.startRecording(customer, recentCallText);
+        try {
+            VoiceRecorder.startRecording(customer, recentCallText);
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
         window.addRecentCaller(customer, recentCallText);
         return size;
     }

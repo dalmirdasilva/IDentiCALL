@@ -702,7 +702,11 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_autoRecordMenuItemActionPerformed
 
     private void recordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recordButtonActionPerformed
-        VoiceRecorder.stopRecording();
+        try {
+            VoiceRecorder.stopRecording();
+        } catch (IOException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
         recordButton.setEnabled(false);
         recordStatusLabel.setText("Parado");
     }//GEN-LAST:event_recordButtonActionPerformed
