@@ -115,7 +115,7 @@
                       <Component id="projectDescriptionLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="versionLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="94" max="32767" attributes="0"/>
+                      <EmptySpace pref="97" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -144,7 +144,7 @@
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Ubuntu" size="18" style="1"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Identifica&#xe7;&#xe3;o de Chamadas"/>
+                <Property name="text" type="java.lang.String" value="Identifica&#xe7;&#xe3;o de chamadas"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="projectLabel">

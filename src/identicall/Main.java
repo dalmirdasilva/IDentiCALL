@@ -97,8 +97,10 @@ public class Main implements PhoneNumberReadyListener, CustomerSearcher {
         Customer customer = size > 0 ? customers.get(0) : null;
         if (fromLine) {
             try {
-                VoiceRecorder.startRecording(customer, phone);
-                window.startRecordTimer();
+                if (VoiceRecorder.isEnabled()) {
+                    VoiceRecorder.startRecording(customer, phone);
+                    window.startRecordTimer();
+                }
             } catch (IOException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }

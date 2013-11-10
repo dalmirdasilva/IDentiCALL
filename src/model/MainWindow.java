@@ -134,7 +134,7 @@ public class MainWindow extends javax.swing.JFrame {
         rightPanel.setPreferredSize(new java.awt.Dimension(550, 50));
 
         projectDescriptionLabel.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
-        projectDescriptionLabel.setText("Identificação de Chamadas");
+        projectDescriptionLabel.setText("Identificação de chamadas");
 
         projectLabel.setFont(new java.awt.Font("Ubuntu", 1, 30)); // NOI18N
         projectLabel.setText("IDentiCALL");
@@ -153,7 +153,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addComponent(projectDescriptionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(versionLabel)
-                .addContainerGap(94, Short.MAX_VALUE))
+                .addContainerGap(97, Short.MAX_VALUE))
         );
         rightPanelLayout.setVerticalGroup(
             rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
