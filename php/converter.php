@@ -21,6 +21,8 @@ $insert_query = "INSERT INTO customer ( "
 	."cpf_cnpj,"
 	."address,"
 	."birth_date,"
+	."primary_business_phone,"
+	."secondary_business_phone,"
 	."business_phone,"
 	."cell_phone,"
 	."state_abbreviation,"
@@ -40,8 +42,8 @@ $ibase_select_query = ibase_query("SELECT * FROM TCLIENTE ORDER BY CLICOD ASC");
 
 while($line = ibase_fetch_assoc($ibase_select_query)) {
 	
-	$local_ibase_select_query = $ibase_select_query;
-	$local_ibase_select_query .= "("
+	$local_insert_query = $insert_query;
+	$local_insert_query .= "("
 		."\'".$line["CLI_NOME"]."\'"
 		."\'".$line["CLI_CPFCNPJ"]."\'"
 		."\'".$line["CLI_ENDERECO"]."\'"
@@ -49,7 +51,7 @@ while($line = ibase_fetch_assoc($ibase_select_query)) {
 		."\'".$line["CLI_FONECOM1"]."\'"
 		."\'".$line["CLI_CELULAR"]."\'"
 		."\'".$line["CID_UF"]."\'"
-		."\'".$line["CLI_NOME"]."\'"
+		."\'".$line["CLI_CIDADE"]."\'"
 		.""
 		.""
 		.""

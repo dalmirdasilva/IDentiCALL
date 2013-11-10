@@ -1,7 +1,8 @@
 package entity;
 
 import java.io.Serializable;
-import java.sql.Time;
+import java.sql.Date;
+import java.sql.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,12 +18,12 @@ public class IncomingCall implements Serializable {
     private long id;
     private String number;
     @Column(name = "call_at")
-    private Time callAt;
+    private Date callAt;
 
     public IncomingCall() {
     }
 
-    public IncomingCall(long id, String number, Time callAt) {
+    public IncomingCall(long id, String number, Date callAt) {
         this.id = id;
         this.number = number;
         this.callAt = callAt;
@@ -44,11 +45,11 @@ public class IncomingCall implements Serializable {
         this.number = number;
     }
 
-    public Time getCallAt() {
+    public Date getCallAt() {
         return callAt;
     }
 
-    public void setCallAt(Time callAt) {
+    public void setCallAt(Date callAt) {
         this.callAt = callAt;
     }
 }

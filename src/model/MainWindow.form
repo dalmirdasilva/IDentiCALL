@@ -16,6 +16,7 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Grava&#xe7;&#xe3;o Autom&#xe1;tica"/>
                 <Property name="toolTipText" type="java.lang.String" value=""/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="autoRecordMenuItemActionPerformed"/>
@@ -39,10 +40,13 @@
             </Property>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem2">
+            <MenuItem class="javax.swing.JMenuItem" name="aboutMenuItem">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Sobre"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="aboutMenuItemActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -70,7 +74,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,115,0,0,3,-20"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,115,0,0,4,26"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
@@ -245,6 +249,7 @@
         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[270, 445]"/>
         </Property>
+        <Property name="requestFocusEnabled" type="boolean" value="false"/>
       </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
@@ -296,7 +301,7 @@
         <Container class="javax.swing.JPanel" name="incomingCallMainPanel">
           <Properties>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[300, 485]"/>
+              <Dimension value="[270, 485]"/>
             </Property>
           </Properties>
           <Constraints>
@@ -308,7 +313,7 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="incomingCallScrollPane" alignment="0" pref="270" max="32767" attributes="0"/>
+                  <Component id="incomingCallScrollPane" alignment="0" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -319,6 +324,11 @@
           </Layout>
           <SubComponents>
             <Container class="javax.swing.JScrollPane" name="incomingCallScrollPane">
+              <Properties>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[270, 445]"/>
+                </Property>
+              </Properties>
               <AuxValues>
                 <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
               </AuxValues>
@@ -403,7 +413,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="searchButton" min="-2" pref="93" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="searchMessageLabel" pref="151" max="32767" attributes="0"/>
+                      <Component id="searchMessageLabel" pref="197" max="32767" attributes="0"/>
                       <EmptySpace min="-2" pref="77" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -510,56 +520,52 @@
                               <Component id="cpfCnpjLabel" min="-2" pref="134" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Component id="birthDateLabelFixed" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="birthDateLabel" max="32767" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Component id="postLabelFixed" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="postLabel" max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="birthDateLabelFixed" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="birthDateLabel" max="32767" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="legalPersonLavelFixed" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="legalPersonLabel" max="32767" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="cellPhoneLabelFixed" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="cellPhoneLabel" max="32767" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="residentialPhoneLavelFixed" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="residentialPhoneLabel" max="32767" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="primaryBusinessPhoneLabelFixed" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="primaryBusinessPhoneLabel" min="-2" pref="180" max="-2" attributes="0"/>
+                                      </Group>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="stateAbbreviationLabelFixed" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="stateAbbreviationLabel" max="32767" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Component id="legalPersonLavelFixed" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="legalPersonLabel" max="32767" attributes="0"/>
+                                      <Component id="stateAbbreviationLabel" min="-2" pref="237" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="districtLabelFixed" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="districtLabel" max="32767" attributes="0"/>
+                                      <Component id="districtLabel" min="-2" pref="244" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Component id="cellPhoneLabelFixed" min="-2" max="-2" attributes="0"/>
+                                      <Component id="secondaryBusinessPhoneLabelFixed" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="cellPhoneLabel" max="32767" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Component id="residentialPhoneLavelFixed" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="residentialPhoneLabel" max="32767" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Component id="businessPhoneLabelFixed" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="businessPhoneLabel" min="-2" pref="180" max="-2" attributes="0"/>
+                                      <Component id="secondaryBusinessPhoneLabel" min="-2" pref="180" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                               <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" attributes="0">
-                                      <Component id="faxLabelFixed" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="faxLabel" min="-2" pref="349" max="-2" attributes="0"/>
-                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                                  </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="addressLabelFixed" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
@@ -590,10 +596,24 @@
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="recordLabel" max="32767" attributes="0"/>
                                   </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Component id="problemsLabelFixed" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="problemsLabel" max="32767" attributes="0"/>
+                                  <Group type="102" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Group type="102" attributes="0">
+                                              <Component id="faxLabelFixed" min="-2" max="-2" attributes="0"/>
+                                              <EmptySpace max="-2" attributes="0"/>
+                                              <Component id="faxLabel" min="-2" pref="349" max="-2" attributes="0"/>
+                                          </Group>
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <Component id="problemsLabelFixed" min="-2" max="-2" attributes="0"/>
+                                              <EmptySpace max="-2" attributes="0"/>
+                                              <Component id="problemsLabel" min="-2" pref="36" max="-2" attributes="0"/>
+                                              <EmptySpace max="-2" attributes="0"/>
+                                              <Component id="postLabelFixed" min="-2" max="-2" attributes="0"/>
+                                              <EmptySpace max="-2" attributes="0"/>
+                                              <Component id="postLabel" min="-2" pref="62" max="-2" attributes="0"/>
+                                          </Group>
+                                      </Group>
+                                      <EmptySpace min="0" pref="33" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -631,29 +651,29 @@
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="addressLabelFixed" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="addressLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="businessPhoneLabelFixed" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="businessPhoneLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="primaryBusinessPhoneLabelFixed" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="primaryBusinessPhoneLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="districtLabelFixed" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="districtLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="cityLabelFixed" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="cityLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="secondaryBusinessPhoneLabelFixed" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="secondaryBusinessPhoneLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="municipalityLabelFixed" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="municipalityLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="stateAbbreviationLabelFixed" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="stateAbbreviationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="districtLabelFixed" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="districtLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="corporateNameLabelFixed" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="corporateNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="postLabelFixed" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="postLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="stateAbbreviationLabelFixed" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="stateAbbreviationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -668,6 +688,8 @@
                           <Component id="legalPersonLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="problemsLabelFixed" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="problemsLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="postLabelFixed" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="postLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="observationLabelFixed" min="-2" max="-2" attributes="0"/>
@@ -831,15 +853,15 @@
                 <Property name="text" type="java.lang.String" value="---"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="businessPhoneLabelFixed">
+            <Component class="javax.swing.JLabel" name="primaryBusinessPhoneLabelFixed">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Ubuntu" size="16" style="1"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Fone Comecial:"/>
+                <Property name="text" type="java.lang.String" value="Fone Comecial 1:"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="businessPhoneLabel">
+            <Component class="javax.swing.JLabel" name="primaryBusinessPhoneLabel">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Ubuntu" size="16" style="0"/>
@@ -986,6 +1008,22 @@
                   <Font name="Ubuntu" size="16" style="0"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="---"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="secondaryBusinessPhoneLabelFixed">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Ubuntu" size="16" style="1"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Fone Comecial 2:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="secondaryBusinessPhoneLabel">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Ubuntu" size="16" style="0"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="(--) --------"/>
               </Properties>
             </Component>
           </SubComponents>
