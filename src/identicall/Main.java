@@ -32,7 +32,6 @@ import serialclient.SerialClientException;
 public class Main implements PhoneNumberReadyListener, CustomerSearcher {
 
     final private static String TIME_ZONE_ID = "Brazil/East";
-
     private SessionFactory sessionFactory;
     private Session session;
     private IncomingCallDAO incomingCallDAO;
@@ -69,13 +68,12 @@ public class Main implements PhoneNumberReadyListener, CustomerSearcher {
 
         java.awt.EventQueue.invokeLater(
                 new Runnable() {
-                    @Override
-                    public void run() {
-                        window = new MainWindow(instance);
-                        window.setVisible(true);
-                    }
-                });
-
+            @Override
+            public void run() {
+                window = new MainWindow(instance);
+                window.setVisible(true);
+            }
+        });
     }
 
     @Override
@@ -87,19 +85,23 @@ public class Main implements PhoneNumberReadyListener, CustomerSearcher {
         searchAndPopulateByProperties(propertiesMap, true);
     }
 
-    private int searchAndPopulateByProperties(Map<String, String> propertiesMap, boolean showRecentCall) {
+    private int searchAndPopulateByProperties(Map<String, String> propertiesMap, boolean fromLine) {
         List<Customer> customers = customerDAO.findByAttributes(propertiesMap);
         String recentCallText = null;
-        if (showRecentCall && propertiesMap.containsKey(Customer.CELL_PHONE_COLUMN)) {
-            String phone = propertiesMap.get(Customer.CELL_PHONE_COLUMN);
+        String phone = "";
+        if (fromLine && propertiesMap.containsKey(Customer.CELL_PHONE_COLUMN)) {
+            phone = propertiesMap.get(Customer.CELL_PHONE_COLUMN);
             recentCallText = getRecentCallText(phone);
         }
         int size = customers.size();
         Customer customer = size > 0 ? customers.get(0) : null;
-        try {
-            VoiceRecorder.startRecording(customer, recentCallText);
-        } catch (IOException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        if (fromLine) {
+            try {
+                VoiceRecorder.startRecording(customer, phone);
+                window.startRecordTimer();
+            } catch (IOException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         window.addRecentCaller(customer, recentCallText);
         return size;

@@ -40,7 +40,7 @@ public class MainWindow extends javax.swing.JFrame {
      */
     public MainWindow(CustomerSearcher customerSearcher) {
         initComponents();
-        
+
         this.customerSearcher = customerSearcher;
         this.recentCallers = new HashMap<>();
     }
@@ -194,7 +194,7 @@ public class MainWindow extends javax.swing.JFrame {
         leftPanelLayout.setHorizontalGroup(
             leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(leftPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(97, Short.MAX_VALUE)
                 .addComponent(recordFixedLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(recordStatusLabel)
@@ -276,7 +276,7 @@ public class MainWindow extends javax.swing.JFrame {
         );
         incomingCallMainPanelLayout.setVerticalGroup(
             incomingCallMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(incomingCallScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 521, Short.MAX_VALUE)
+            .addComponent(incomingCallScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 519, Short.MAX_VALUE)
         );
 
         rightSidePanel.add(incomingCallMainPanel, java.awt.BorderLayout.CENTER);
@@ -627,7 +627,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(observationLabelFixed)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(observationScrollPannel, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
+                .addComponent(observationScrollPannel, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -731,6 +731,7 @@ public class MainWindow extends javax.swing.JFrame {
     private void recordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recordButtonActionPerformed
         try {
             VoiceRecorder.stopRecording();
+            stopRecordTimer();
         } catch (IOException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -754,7 +755,6 @@ public class MainWindow extends javax.swing.JFrame {
     private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
         new About().setVisible(true);
     }//GEN-LAST:event_aboutMenuItemActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JLabel addressLabel;
@@ -894,19 +894,44 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }
     
+    public void stopRecordTimer() {
+        
+        if (recortTimerThread != null) {
+            recortTimerThread.interrupt();
+        }
+        recordTimeLabel.setText("00h00m00s");
+    }
+
     public void startRecordTimer() {
+
+        stopRecordTimer();
         recortTimerThread = new Thread() {
-            
+            private int timer = 0;
+
             @Override
             public void run() {
-                
+
+                while (!interrupted()) {
+                    try {
+                        timer++;
+                        int seconds = timer % 60;
+                        int minutes = (int) (timer / 60) % 60;
+                        int hours = (int) (timer / 60 / 24) % 24;
+                        recordTimeLabel.setText(String.format("%02dh%02dm%02ds", hours, minutes, seconds));
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                        Thread.currentThread().interrupt();
+                        
+                    }
+                }
             }
         };
         recortTimerThread.start();
     }
 
     public void appendCallerList(String text) {
-        
+
         DefaultListModel listModel = new DefaultListModel();
         listModel.addElement(text);
         int max = Math.min(MAX_RECENT_CALLS_TO_SHOW, incomingCallList.getModel().getSize());
