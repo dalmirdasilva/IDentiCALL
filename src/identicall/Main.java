@@ -49,7 +49,7 @@ public class Main implements PhoneNumberReadyListener, CustomerSearcher {
             AnnotationConfiguration c = new AnnotationConfiguration();
             c.addAnnotatedClass(IncomingCall.class);
             c.addAnnotatedClass(Customer.class);
-            c.configure();
+            c.configure("hibernate.mysql.cfg.xml");
             sessionFactory = c.buildSessionFactory();
             session = sessionFactory.openSession();
         } catch (HibernateException ex) {
