@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.MainWindow;
 import org.hibernate.HibernateException;
+import org.hibernate.ObjectNotFoundException;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.classic.Session;
@@ -48,7 +49,6 @@ public class Main implements PhoneNumberReadyListener, CustomerSearcher {
     private void setup() throws NoSuchPortException, PortInUseException, UnsupportedCommOperationException, TooManyListenersException, IOException, SerialClientException {
         try {
             AnnotationConfiguration c = new AnnotationConfiguration();
-            //c.addAnnotatedClass(IncomingCall.class);
             c.addAnnotatedClass(Customer.class);
             c.addAnnotatedClass(City.class);
             c.configure(AppProperties.getProperties().getProperty(HIBERNATE_CFG_PROPERTY));
@@ -88,7 +88,12 @@ public class Main implements PhoneNumberReadyListener, CustomerSearcher {
     }
 
     private int searchAndPopulateByProperties(Map<String, String> propertiesMap, boolean fromLine) {
-        List<Customer> customers = customerDAO.findByAttributes(propertiesMap);
+        List<Customer> customers;
+        try {
+            customers = customerDAO.findByAttributes(propertiesMap);
+        } catch(ObjectNotFoundException ex) {
+            return 0;
+        }
         String recentCallText = null;
         String phone = "";
         if (fromLine && propertiesMap.containsKey(Customer.CELL_PHONE_COLUMN)) {

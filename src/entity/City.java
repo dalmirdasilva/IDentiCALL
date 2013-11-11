@@ -20,7 +20,7 @@ public class City implements Serializable {
     private long id;
     @Column(name = "CID_MUNICIPIO")
     private String municipality;
-    @Column(name = "CLI_CORRESP_CEP")
+    @Column(name = "CID_UF")
     private String stateAbbreviation;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "city")
     private Set<Customer> customers;
