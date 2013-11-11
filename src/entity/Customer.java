@@ -1,16 +1,19 @@
 package entity;
 
 import java.io.Serializable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "customer")
 public class Customer implements Serializable {
-    
+
     final public static String CELL_PHONE_COLUMN = "cellPhone";
     final public static String PRIMARY_BUSINESS_PHONE_COLUMN = "primaryBusinessPhone";
     final public static String SECONDARY_BUSINESS_PHONE_COLUMN = "secondaryBusinessPhone";
@@ -20,43 +23,52 @@ public class Customer implements Serializable {
 
     @Id
     @GeneratedValue
+    @Column(name = "CLI_CODIGO")
     private long id;
+    @Column(name = "CLI_NOME")
     private String name;
-    @Column(name = "cpf_cnpj")
+    @Column(name = "CLI_CPFCNPJ")
     private String cpfCnpj;
-    @Column(name = "residential_phone")
+    @Column(name = "CLI_FONERES")
     private String residentialPhone;
+    @Column(name = "CLI_FAX")
     private String fax;
-    @Column(name = "cell_phone")
+    @Column(name = "CLI_CELULAR")
     private String cellPhone;
+    @Column(name = "CLI_EMAIL")
     private String email;
-    @Column(name = "corporate_name")
+    @Column(name = "CLI_RAZAOSOCIAL")
     private String corporateName;
+    @Column(name = "CLI_ENDERECO")
     private String address;
+    @Column(name = "CLI_CORRESP_CEP")
     private String district;
-    private String city;
-    @Column(name = "state_abbreviation")
-    private String stateAbbreviation;
-    private String municipality;
-    @Column(name = "primary_business_phone")
+    @JoinColumn(name = "CLI_CID_CODIGO")
+    @ManyToOne(cascade = CascadeType.ALL)
+    private City city;
+    @Column(name = "CLI_FONECOM1")
     private String primaryBusinessPhone;
-    @Column(name = "secondary_business_phone")
+    @Column(name = "CLI_FONECOM2")
     private String secondaryBusinessPhone;
-    @Column(name = "birth_date")
+    @Column(name = "CLI_NASCTO")
     private String birthDate;
-    @Column(name = "legal_person")
+    @Column(name = "CLI_PESSOA")
     private String legalPerson;
-    @Column(name = "recort_date")
+    @Column(name = "CLI_DATACADASTRO")
     private String recortDate;
+    @Column(name = "CLI_CORREIO")
     private Boolean post;
+    @Column(name = "CLI_PROBLEMAS")
     private Boolean problems;
-    @Column(name = "observation", length = 2048)
+    @Column(name = "CLI_ATIVO")
+    private boolean active;
+    @Column(name = "CLI_OBSERVACAO", length = 2048)
     private String observation;
 
     public Customer() {
     }
 
-    public Customer(String name, String cpfCnpj, String residentialPhone, String fax, String cellPhone, String email, String corporateName, String address, String district, String city, String stateAbbreviation, String municipality, String primaryBusinessPhone, String secondaryBusinessPhone, String birthDate, String legalPerson, String recortDate, Boolean post, Boolean problems, String observation) {
+    public Customer(String name, String cpfCnpj, String residentialPhone, String fax, String cellPhone, String email, String corporateName, String address, String district, City city, String primaryBusinessPhone, String secondaryBusinessPhone, String birthDate, String legalPerson, String recortDate, Boolean post, Boolean problems, boolean active, String observation) {
         this.name = name;
         this.cpfCnpj = cpfCnpj;
         this.residentialPhone = residentialPhone;
@@ -67,8 +79,6 @@ public class Customer implements Serializable {
         this.address = address;
         this.district = district;
         this.city = city;
-        this.stateAbbreviation = stateAbbreviation;
-        this.municipality = municipality;
         this.primaryBusinessPhone = primaryBusinessPhone;
         this.secondaryBusinessPhone = secondaryBusinessPhone;
         this.birthDate = birthDate;
@@ -76,6 +86,7 @@ public class Customer implements Serializable {
         this.recortDate = recortDate;
         this.post = post;
         this.problems = problems;
+        this.active = active;
         this.observation = observation;
     }
 
@@ -159,28 +170,12 @@ public class Customer implements Serializable {
         this.district = district;
     }
 
-    public String getCity() {
+    public City getCity() {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(City city) {
         this.city = city;
-    }
-    
-    public String getMunicipality() {
-        return municipality;
-    }    
-    
-    public void setMunicipality(String municipality) {
-        this.municipality = municipality;
-    }    
-
-    public String getStateAbbreviation() {
-        return stateAbbreviation;
-    }
-
-    public void setStateAbbreviation(String stateAbbreviation) {
-        this.stateAbbreviation = stateAbbreviation;
     }
 
     public String getPrimaryBusinessPhone() {
@@ -237,6 +232,14 @@ public class Customer implements Serializable {
 
     public void setProblems(Boolean problems) {
         this.problems = problems;
+    }
+
+    public boolean getActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public String getObservation() {

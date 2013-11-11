@@ -1,5 +1,6 @@
 package model;
 
+import entity.City;
 import entity.Customer;
 import identicall.CustomerSearcher;
 import identicall.VoiceRecorder;
@@ -838,10 +839,10 @@ public class MainWindow extends javax.swing.JFrame {
         legalPersonLabel.setText(customer.getLegalPerson());
         addressLabel.setText(customer.getAddress());
         districtLabel.setText(customer.getDistrict());
-        cityLabel.setText(customer.getCity());
-        stateAbbreviationLabel.setText(customer.getStateAbbreviation());
+        cityLabel.setText(customer.getCity().getMunicipality());
+        stateAbbreviationLabel.setText(customer.getCity().getStateAbbreviation());
         districtLabel.setText(customer.getDistrict());
-        municipalityLabel.setText(customer.getMunicipality());
+        municipalityLabel.setText(customer.getCity().getMunicipality());
         primaryBusinessPhoneLabel.setText(customer.getPrimaryBusinessPhone());
         secondaryBusinessPhoneLabel.setText(customer.getSecondaryBusinessPhone());
         legalPersonLabel.setText(customer.getLegalPerson());
@@ -854,27 +855,28 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     public void emptyCustomer() {
+        City city = new City();
         Customer customer = new Customer();
+        customer.setCity(city);
         customer.setName("<Cliente não encontrado>");
         customer.setAddress("---");
         customer.setBirthDate("--/--/----");
         customer.setPrimaryBusinessPhone("(--) --------");
         customer.setSecondaryBusinessPhone("(--) --------");
         customer.setCellPhone("(--) --------");
-        customer.setCity("---");
         customer.setCorporateName("---");
         customer.setCpfCnpj("---");
         customer.setDistrict("---");
         customer.setEmail("---");
         customer.setFax("(--) --------");
         customer.setLegalPerson("---");
-        customer.setMunicipality("---");
+        city.setMunicipality("---");
         customer.setObservation("");
         customer.setPost(false);
         customer.setProblems(false);
         customer.setRecortDate("--/--/----");
         customer.setResidentialPhone("(--) --------");
-        customer.setStateAbbreviation("---");
+        city.setStateAbbreviation("---");
         populateCustomer(customer);
     }
 

@@ -6,8 +6,8 @@ import dao.IncomingCallDAO;
 import dao.hibernate.CustomerHibernateDAO;
 import dao.hibernate.HibernateDAOFactory;
 import dao.hibernate.IncomingCallHibernateDAO;
+import entity.City;
 import entity.Customer;
-import entity.IncomingCall;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;
@@ -47,9 +47,10 @@ public class Main implements PhoneNumberReadyListener, CustomerSearcher {
     private void setup() throws NoSuchPortException, PortInUseException, UnsupportedCommOperationException, TooManyListenersException, IOException, SerialClientException {
         try {
             AnnotationConfiguration c = new AnnotationConfiguration();
-            c.addAnnotatedClass(IncomingCall.class);
+            //c.addAnnotatedClass(IncomingCall.class);
             c.addAnnotatedClass(Customer.class);
-            c.configure("hibernate.mysql.cfg.xml");
+            c.addAnnotatedClass(City.class);
+            c.configure("hibernate.ibase.cfg.xml");
             sessionFactory = c.buildSessionFactory();
             session = sessionFactory.openSession();
         } catch (HibernateException ex) {
