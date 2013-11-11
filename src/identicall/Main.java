@@ -32,6 +32,7 @@ import serialclient.SerialClientException;
 public class Main implements PhoneNumberReadyListener, CustomerSearcher {
 
     final private static String TIME_ZONE_ID = "Brazil/East";
+    final private static String HIBERNATE_CFG_PROPERTY = "hibernatecfg";
     private SessionFactory sessionFactory;
     private Session session;
     private IncomingCallDAO incomingCallDAO;
@@ -50,7 +51,7 @@ public class Main implements PhoneNumberReadyListener, CustomerSearcher {
             //c.addAnnotatedClass(IncomingCall.class);
             c.addAnnotatedClass(Customer.class);
             c.addAnnotatedClass(City.class);
-            c.configure("hibernate.ibase.cfg.xml");
+            c.configure(AppProperties.getProperties().getProperty(HIBERNATE_CFG_PROPERTY));
             sessionFactory = c.buildSessionFactory();
             session = sessionFactory.openSession();
         } catch (HibernateException ex) {
