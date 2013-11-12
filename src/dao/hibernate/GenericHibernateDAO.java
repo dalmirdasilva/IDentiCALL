@@ -89,7 +89,7 @@ public abstract class GenericHibernateDAO<T, K extends Serializable>
         if (attributeMap != null) {
             Disjunction disjunction = Restrictions.disjunction();
             for (Map.Entry<String, String> entry : attributeMap.entrySet()) {
-                disjunction.add(Restrictions.like(entry.getKey(), "%" + entry.getValue() + "%"));
+                disjunction.add(Restrictions.ilike(entry.getKey(), "%" + entry.getValue() + "%"));
             }
             criteria.add(disjunction);
         }

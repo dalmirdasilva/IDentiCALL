@@ -1,11 +1,14 @@
 package identicall;
 
+import dao.CityDAO;
 import dao.CustomerDAO;
 import dao.DAOFactory;
 import dao.IncomingCallDAO;
+import dao.hibernate.CityHibernateDAO;
 import dao.hibernate.CustomerHibernateDAO;
 import dao.hibernate.HibernateDAOFactory;
 import dao.hibernate.IncomingCallHibernateDAO;
+import dbutil.Normalizer;
 import entity.City;
 import entity.Customer;
 import gnu.io.NoSuchPortException;
@@ -13,6 +16,7 @@ import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -22,7 +26,7 @@ import java.util.TimeZone;
 import java.util.TooManyListenersException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.MainWindow;
+import view.MainWindow;
 import org.hibernate.HibernateException;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.SessionFactory;
@@ -38,6 +42,7 @@ public class Main implements PhoneNumberReadyListener, CustomerSearcher {
     private Session session;
     private IncomingCallDAO incomingCallDAO;
     private CustomerDAO customerDAO;
+    private CityDAO cityDAO;
     private MainWindow window;
 
     public static void main(String[] args) throws
@@ -64,18 +69,31 @@ public class Main implements PhoneNumberReadyListener, CustomerSearcher {
 
         incomingCallDAO = (IncomingCallDAO) daoFactory.getNewDAO(IncomingCallHibernateDAO.class);
         customerDAO = (CustomerDAO) daoFactory.getNewDAO(CustomerHibernateDAO.class);
+        cityDAO = (CityDAO) daoFactory.getNewDAO(CityHibernateDAO.class);
 
+        new Thread() {
+
+            @Override
+            public void run() {
+                try {
+                    Normalizer.normalize(customerDAO, cityDAO);
+                } catch (Exception ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }.start();
+        
         final Main instance = this;
         PhoneLineWatcher incomingCallListener = new PhoneLineWatcher(instance);
 
         java.awt.EventQueue.invokeLater(
                 new Runnable() {
-            @Override
-            public void run() {
-                window = new MainWindow(instance);
-                window.setVisible(true);
-            }
-        });
+                    @Override
+                    public void run() {
+                        window = new MainWindow(instance);
+                        window.setVisible(true);
+                    }
+                });
     }
 
     @Override
@@ -87,17 +105,17 @@ public class Main implements PhoneNumberReadyListener, CustomerSearcher {
         searchAndPopulateByProperties(propertiesMap, true);
     }
 
-    private int searchAndPopulateByProperties(Map<String, String> propertiesMap, boolean fromLine) {
+    private int searchAndPopulateByProperties(Map<String, String> properties, boolean fromLine) {
         List<Customer> customers;
         try {
-            customers = customerDAO.findByAttributes(propertiesMap);
-        } catch(ObjectNotFoundException ex) {
+            customers = customerDAO.findByAttributes(properties);
+        } catch (ObjectNotFoundException ex) {
             return 0;
         }
         String recentCallText = null;
         String phone = "";
-        if (fromLine && propertiesMap.containsKey(Customer.CELL_PHONE_COLUMN)) {
-            phone = propertiesMap.get(Customer.CELL_PHONE_COLUMN);
+        if (fromLine && properties.containsKey(Customer.CELL_PHONE_COLUMN)) {
+            phone = properties.get(Customer.CELL_PHONE_COLUMN);
             recentCallText = getRecentCallText(phone);
         }
         int size = customers.size();

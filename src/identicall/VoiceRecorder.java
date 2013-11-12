@@ -4,6 +4,7 @@ import entity.Customer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
@@ -11,13 +12,15 @@ import java.util.logging.Logger;
 
 public class VoiceRecorder {
 
-    final private static String RECOR_COMMAND_PROPERTY = "arecordercommand";
+    final private static String RECORDER_COMMAND_PROPERTY = "recordercommand";
+    final private static String RECORDER_PROPERTY = "recorder";
     final private static String CONVERT_COMMAND_PROPERTY = "convertcommand";
     final private static String OUTPUT_PATH_PROPERTY = "voicedir";
     final private static String AUTO_RECORD_PROPERTY = "autorecord";
     private static boolean enabled;
     private static boolean recording = false;
     private static Process recorderProcess;
+    private static int lastRecordPIDNumber = 0;
 
     static {
         try {
@@ -29,17 +32,35 @@ public class VoiceRecorder {
     }
 
     private static void lauchRecordProcess(File outputFile) throws IOException {
-        storRecordProcess();
-        String command = AppProperties.getProperties().getProperty(RECOR_COMMAND_PROPERTY);
+        stopRecordProcess();
+        String command = AppProperties.getProperties().getProperty(RECORDER_COMMAND_PROPERTY);
         command = String.format(command, outputFile.getAbsolutePath());
         Runtime runtime = Runtime.getRuntime();
         recorderProcess = runtime.exec(command);
+        try {
+            Field pidField = recorderProcess.getClass().getDeclaredField("pid");
+            pidField.setAccessible(true);
+            lastRecordPIDNumber = pidField.getInt(recorderProcess);
+            System.out.println("pid: " + lastRecordPIDNumber);
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
+            Logger.getLogger(VoiceRecorder.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
-    private static void storRecordProcess() throws IOException {
+    private static void stopRecordProcess() throws IOException {
         if (recorderProcess != null) {
             System.out.println("recorderProcess.destroy();");
             recorderProcess.destroy();
+            if (lastRecordPIDNumber > 0) {
+                Runtime runtime = Runtime.getRuntime();
+                Object recorder = AppProperties.getProperties().get(RECORDER_PROPERTY);
+                Process recorders = runtime.exec("killall " + recorder);
+                try {
+                    recorders.waitFor();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(VoiceRecorder.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
             recorderProcess = null;
         }
     }
@@ -79,7 +100,7 @@ public class VoiceRecorder {
     public static void stopRecording() throws IOException {
         if (enabled && recording) {
             recording = false;
-            storRecordProcess();
+            stopRecordProcess();
             System.out.println("should stop recording");
         }
     }

@@ -54,7 +54,7 @@ public class PhoneLineWatcher implements SerialPortEventListener {
             case SerialPortEvent.DATA_AVAILABLE:
                 try {
                     int input = 0;
-                    while ((input = serialClient.getInputStream().read()) != -1) {
+                    while ((input = serialClient.getInputStream().read()) != 1) {
                         if (input == END_NUMBER_MARK || incomingBufferPoiter >= PHONE_NUMBER_BUFFER_SIZE) {
                             if (phoneNumberReadyListener != null) {
                                 String phone = String.copyValueOf(incomingBuffer, 0, incomingBufferPoiter);
@@ -89,42 +89,42 @@ public class PhoneLineWatcher implements SerialPortEventListener {
                 public void run() {
 
                     String[] numbers = new String[]{
-                        "(47)9153-8642",
-                        "(44)9977-0256",
-                        "(51)9965-4276",
-                        "(55)9979-1816",
-                        "(53)9966-7486",
-                        "(53)9972-0783",
-                        "(55)9603-2434",
-                        "(41)9962-0115",
-                        "(47)9153-8642",
-                        "(19)9639-4238",
-                        "(46)9104-6321",
-                        "(19)9639-4238",
-                        "(53)9976-3183",
-                        "(51)9964-2230",
-                        "(19)9635-6004",
-                        "(11)8103-1001",
-                        "(51)9983-8478",
-                        "(51)9968-7998",
-                        "(53)9112-0364",
-                        "(51)9954-5816",
-                        "(51)8172-1011",
-                        "(43)9994-0051",
-                        "(53)8431-1056",
-                        "(47)9979-2725",
-                        "(51)9901-7256",
-                        "(55)9947-4932",
-                        "(49)9964-9313",
-                        "(54)9982-3168",
-                        "(53)8135-0116"
+                        "4791538642",
+                        "4499770256",
+                        "5199654276",
+                        "5599791816",
+                        "5399667486",
+                        "5399720783",
+                        "5596032434",
+                        "4199620115",
+                        "4791538642",
+                        "1996394238",
+                        "4691046321",
+                        "1996394238",
+                        "5399763183",
+                        "5199642230",
+                        "1996356004",
+                        "1181031001",
+                        "5199838478",
+                        "5199687998",
+                        "5391120364",
+                        "5199545816",
+                        "5181721011",
+                        "4399940051",
+                        "5384311056",
+                        "4799792725",
+                        "5199017256",
+                        "5599474932",
+                        "4999649313",
+                        "5499823168",
+                        "5381350116"
                     };
                     int i = 0;
                     while (true) {
                         String number = numbers[i++ % numbers.length];
                         System.out.println(number);
                         try {
-                            Thread.sleep(10000);
+                            Thread.sleep(5000);
                             phoneNumberReadyListener.processPhoneNumber(number);
                         } catch (InterruptedException ex) {
                             Logger.getLogger(PhoneLineWatcher.class.getName()).log(Level.SEVERE, null, ex);

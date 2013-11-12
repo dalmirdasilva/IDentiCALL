@@ -1,11 +1,13 @@
-package model;
+package view;
 
 import entity.City;
 import entity.Customer;
 import identicall.CustomerSearcher;
 import identicall.VoiceRecorder;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -28,7 +30,7 @@ public class MainWindow extends javax.swing.JFrame {
     }
     final private static int MAX_RECENT_CALLS_TO_SHOW = 20;
     final private static int MINIMUM_SEARCH_CHARS = 3;
-    final private static String MESSAGE_NO_CLIENT_FOUND = "Nenhum cliente encontrado.";
+    final private static String MESSAGE_CLIENT_FOUND = "%s cliente(s) encontrado(s).";
     final private static String MESSAGE_MINIMUM_SEARCH_CHARS = "Preencha o campo.";
     private final CustomerSearcher customerSearcher;
     private Map<String, Customer> recentCallers;
@@ -128,6 +130,11 @@ public class MainWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         headerPanel.setBackground(new java.awt.Color(201, 208, 209));
         headerPanel.setLayout(new java.awt.BorderLayout());
@@ -683,7 +690,7 @@ public class MainWindow extends javax.swing.JFrame {
             searchMessageLabel.setText(MESSAGE_MINIMUM_SEARCH_CHARS);
             return;
         }
-
+        searchText = searchText.replaceAll("[()-]", "");
         int selectedIndex = searchComboBox.getSelectedIndex();
         Map<String, String> properties = new HashMap<>();
         switch (selectedIndex) {
@@ -700,12 +707,10 @@ public class MainWindow extends javax.swing.JFrame {
                 break;
         }
         int howMany = customerSearcher.searchCustomer(properties, false);
-        if (howMany > 0) {
-            searchMessageLabel.setText(" ");
-        } else {
-            searchMessageLabel.setText(MESSAGE_NO_CLIENT_FOUND);
+        if (howMany == 0) {
             emptyCustomer();
         }
+        searchMessageLabel.setText(String.format(MESSAGE_CLIENT_FOUND, howMany));
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void incomingCallListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_incomingCallListValueChanged
@@ -750,12 +755,26 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_searchTextFieldKeyPressed
 
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
+        try {
+            VoiceRecorder.stopRecording();
+        } catch (IOException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
         System.exit(0);
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
     private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
         new About().setVisible(true);
     }//GEN-LAST:event_aboutMenuItemActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        try {
+            VoiceRecorder.stopRecording();
+        } catch (IOException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_formWindowClosing
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JLabel addressLabel;
@@ -830,27 +849,27 @@ public class MainWindow extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     public void populateCustomer(Customer customer) {
+        City city = customer.getCity();
         nameLabel.setText(customer.getName());
         cpfCnpjLabel.setText(customer.getCpfCnpj());
         residentialPhoneLabel.setText(customer.getResidentialPhone());
         faxLabel.setText(customer.getFax());
         cellPhoneLabel.setText(customer.getCellPhone());
         emailLabel.setText(customer.getEmail());
-        legalPersonLabel.setText(customer.getLegalPerson());
         addressLabel.setText(customer.getAddress());
         districtLabel.setText(customer.getDistrict());
-        cityLabel.setText(customer.getCity().getMunicipality());
-        stateAbbreviationLabel.setText(customer.getCity().getStateAbbreviation());
+        cityLabel.setText((city != null) ? city.getMunicipality() : "");
+        stateAbbreviationLabel.setText((city != null) ? city.getStateAbbreviation() : "");
         districtLabel.setText(customer.getDistrict());
-        municipalityLabel.setText(customer.getCity().getMunicipality());
+        municipalityLabel.setText((city != null) ? city.getMunicipality() : "");
         primaryBusinessPhoneLabel.setText(customer.getPrimaryBusinessPhone());
         secondaryBusinessPhoneLabel.setText(customer.getSecondaryBusinessPhone());
         legalPersonLabel.setText(customer.getLegalPerson());
         corporateNameLabel.setText(customer.getCorporateName());
         birthDateLabel.setText(customer.getBirthDate());
         recordLabel.setText(customer.getRecortDate());
-        postLabel.setText(customer.getPost() ? "Sim" : "Não");
-        problemsLabel.setText(customer.getProblems() ? "Sim" : "Não");
+        postLabel.setText(String.valueOf(customer.getPost()));
+        problemsLabel.setText(String.valueOf(customer.getProblems()));
         observationTextPane.setText(customer.getObservation());
     }
 
@@ -872,8 +891,8 @@ public class MainWindow extends javax.swing.JFrame {
         customer.setLegalPerson("---");
         city.setMunicipality("---");
         customer.setObservation("");
-        customer.setPost(false);
-        customer.setProblems(false);
+        customer.setPost('N');
+        customer.setProblems('N');
         customer.setRecortDate("--/--/----");
         customer.setResidentialPhone("(--) --------");
         city.setStateAbbreviation("---");
@@ -895,9 +914,9 @@ public class MainWindow extends javax.swing.JFrame {
             recordStatusLabel.setText("Gravando");
         }
     }
-    
+
     public void stopRecordTimer() {
-        
+
         if (recortTimerThread != null) {
             recortTimerThread.interrupt();
         }
@@ -924,7 +943,7 @@ public class MainWindow extends javax.swing.JFrame {
                     } catch (InterruptedException ex) {
                         Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
                         Thread.currentThread().interrupt();
-                        
+
                     }
                 }
             }

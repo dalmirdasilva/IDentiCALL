@@ -9,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "CLIENTES")
@@ -45,6 +47,7 @@ public class Customer implements Serializable {
     private String district;
     @JoinColumn(name = "CLI_CID_CODIGO")
     @ManyToOne(cascade = CascadeType.ALL)
+    @NotFound(action = NotFoundAction.IGNORE)
     private City city;
     @Column(name = "CLI_FONECOM1")
     private String primaryBusinessPhone;
@@ -57,9 +60,9 @@ public class Customer implements Serializable {
     @Column(name = "CLI_DATACADASTRO")
     private String recortDate;
     @Column(name = "CLI_CORREIO")
-    private Boolean post;
+    private Character post;
     @Column(name = "CLI_PROBLEMAS")
-    private Boolean problems;
+    private Character problems;
     @Column(name = "CLI_ATIVO")
     private boolean active;
     @Column(name = "CLI_OBSERVACAO", length = 2048)
@@ -68,7 +71,7 @@ public class Customer implements Serializable {
     public Customer() {
     }
 
-    public Customer(String name, String cpfCnpj, String residentialPhone, String fax, String cellPhone, String email, String corporateName, String address, String district, City city, String primaryBusinessPhone, String secondaryBusinessPhone, String birthDate, String legalPerson, String recortDate, Boolean post, Boolean problems, boolean active, String observation) {
+    public Customer(String name, String cpfCnpj, String residentialPhone, String fax, String cellPhone, String email, String corporateName, String address, String district, City city, String primaryBusinessPhone, String secondaryBusinessPhone, String birthDate, String legalPerson, String recortDate, Character post, Character problems, boolean active, String observation) {
         this.name = name;
         this.cpfCnpj = cpfCnpj;
         this.residentialPhone = residentialPhone;
@@ -218,19 +221,19 @@ public class Customer implements Serializable {
         this.recortDate = recortDate;
     }
 
-    public Boolean getPost() {
+    public Character getPost() {
         return post;
     }
 
-    public void setPost(Boolean post) {
+    public void setPost(Character post) {
         this.post = post;
     }
 
-    public Boolean getProblems() {
+    public Character getProblems() {
         return problems;
     }
 
-    public void setProblems(Boolean problems) {
+    public void setProblems(Character problems) {
         this.problems = problems;
     }
 

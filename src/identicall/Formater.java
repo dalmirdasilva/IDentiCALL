@@ -15,8 +15,10 @@ public class Formater {
         StringBuilder toDisplay = new StringBuilder();
         toDisplay.append("(");
         toDisplay.append(phone.substring(0, 2));
-        toDisplay.append(") ");
-        toDisplay.append(phone.substring(2, 10));
+        toDisplay.append(")");
+        toDisplay.append(phone.substring(2, 6));
+        toDisplay.append("-");
+        toDisplay.append(phone.substring(6, 10));
         return toDisplay.toString();
     }
 
