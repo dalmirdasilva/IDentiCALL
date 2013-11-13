@@ -26,7 +26,7 @@ public class Customer implements Serializable {
     @Id
     @GeneratedValue
     @Column(name = "CLI_CODIGO")
-    private long id;
+    private String id;
     @Column(name = "CLI_NOME")
     private String name;
     @Column(name = "CLI_CPFCNPJ")
@@ -93,11 +93,11 @@ public class Customer implements Serializable {
         this.observation = observation;
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

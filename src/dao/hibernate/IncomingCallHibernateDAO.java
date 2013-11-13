@@ -4,6 +4,6 @@ import dao.IncomingCallDAO;
 import entity.IncomingCall;
 
 public class IncomingCallHibernateDAO
-        extends GenericHibernateDAO<IncomingCall, Long>
+        extends GenericHibernateDAO<IncomingCall, String>
         implements IncomingCallDAO {
 }

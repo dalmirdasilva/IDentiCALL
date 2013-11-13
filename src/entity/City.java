@@ -17,7 +17,7 @@ public class City implements Serializable {
     @Id
     @GeneratedValue
     @Column(name = "CID_CODIGO")
-    private long id;
+    private String id;
     @Column(name = "CID_MUNICIPIO")
     private String municipality;
     @Column(name = "CID_UF")
@@ -34,11 +34,11 @@ public class City implements Serializable {
         this.customers = customers;
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

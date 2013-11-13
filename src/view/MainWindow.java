@@ -2,17 +2,20 @@ package view;
 
 import entity.City;
 import entity.Customer;
+import helper.Formater;
 import identicall.CustomerSearcher;
 import identicall.VoiceRecorder;
+import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.event.ListSelectionEvent;
 
 public class MainWindow extends javax.swing.JFrame {
 
@@ -33,7 +36,7 @@ public class MainWindow extends javax.swing.JFrame {
     final private static String MESSAGE_CLIENT_FOUND = "%s cliente(s) encontrado(s).";
     final private static String MESSAGE_MINIMUM_SEARCH_CHARS = "Preencha o campo.";
     private final CustomerSearcher customerSearcher;
-    private Map<String, Customer> recentCallers;
+    private TreeMap<String, Customer> recentCallers;
     private Thread recortTimerThread;
 
     /**
@@ -45,7 +48,7 @@ public class MainWindow extends javax.swing.JFrame {
         initComponents();
 
         this.customerSearcher = customerSearcher;
-        this.recentCallers = new HashMap<>();
+        this.recentCallers = new TreeMap<>();
     }
 
     /**
@@ -142,9 +145,11 @@ public class MainWindow extends javax.swing.JFrame {
         rightPanel.setPreferredSize(new java.awt.Dimension(550, 50));
 
         projectDescriptionLabel.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
+        projectDescriptionLabel.setForeground(new java.awt.Color(103, 103, 103));
         projectDescriptionLabel.setText("Identificação de chamadas");
 
         projectLabel.setFont(new java.awt.Font("Ubuntu", 1, 30)); // NOI18N
+        projectLabel.setForeground(new java.awt.Color(103, 103, 103));
         projectLabel.setText("IDentiCALL");
 
         versionLabel.setFont(new java.awt.Font("DejaVu Sans", 0, 10)); // NOI18N
@@ -229,7 +234,7 @@ public class MainWindow extends javax.swing.JFrame {
         getContentPane().add(headerPanel, java.awt.BorderLayout.PAGE_START);
 
         rightSidePanel.setMaximumSize(new java.awt.Dimension(270, 445));
-        rightSidePanel.setPreferredSize(new java.awt.Dimension(270, 445));
+        rightSidePanel.setPreferredSize(new java.awt.Dimension(280, 445));
         rightSidePanel.setRequestFocusEnabled(false);
         rightSidePanel.setLayout(new java.awt.BorderLayout());
 
@@ -245,7 +250,7 @@ public class MainWindow extends javax.swing.JFrame {
             .addGroup(incomingCallHeaderPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(incomingCallLabel)
-                .addContainerGap(129, Short.MAX_VALUE))
+                .addContainerGap(139, Short.MAX_VALUE))
         );
         incomingCallHeaderPanelLayout.setVerticalGroup(
             incomingCallHeaderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -269,11 +274,6 @@ public class MainWindow extends javax.swing.JFrame {
                 incomingCallListMouseClicked(evt);
             }
         });
-        incomingCallList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                incomingCallListValueChanged(evt);
-            }
-        });
         incomingCallScrollPane.setViewportView(incomingCallList);
 
         javax.swing.GroupLayout incomingCallMainPanelLayout = new javax.swing.GroupLayout(incomingCallMainPanel);
@@ -284,7 +284,7 @@ public class MainWindow extends javax.swing.JFrame {
         );
         incomingCallMainPanelLayout.setVerticalGroup(
             incomingCallMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(incomingCallScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 519, Short.MAX_VALUE)
+            .addComponent(incomingCallScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 521, Short.MAX_VALUE)
         );
 
         rightSidePanel.add(incomingCallMainPanel, java.awt.BorderLayout.CENTER);
@@ -292,6 +292,7 @@ public class MainWindow extends javax.swing.JFrame {
         getContentPane().add(rightSidePanel, java.awt.BorderLayout.LINE_END);
 
         bodyPanel.setBackground(new java.awt.Color(255, 255, 255));
+        bodyPanel.setPreferredSize(new java.awt.Dimension(770, 554));
         bodyPanel.setLayout(new java.awt.BorderLayout());
 
         searchPanel.setBackground(new java.awt.Color(195, 217, 255));
@@ -306,11 +307,6 @@ public class MainWindow extends javax.swing.JFrame {
 
         searchTextField.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
         searchTextField.setPreferredSize(new java.awt.Dimension(73, 25));
-        searchTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                searchTextFieldActionPerformed(evt);
-            }
-        });
         searchTextField.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 searchTextFieldKeyPressed(evt);
@@ -344,7 +340,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(searchMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
+                .addComponent(searchMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
                 .addGap(77, 77, 77))
         );
         searchPanelLayout.setVerticalGroup(
@@ -569,7 +565,7 @@ public class MainWindow extends javax.swing.JFrame {
                                         .addComponent(postLabelFixed)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(postLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 33, Short.MAX_VALUE))))
+                                .addGap(0, 23, Short.MAX_VALUE))))
                     .addComponent(nameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -648,7 +644,6 @@ public class MainWindow extends javax.swing.JFrame {
 
         autoRecordMenuItem.setText("Gravação Automática");
         autoRecordMenuItem.setToolTipText("");
-        autoRecordMenuItem.setEnabled(false);
         autoRecordMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 autoRecordMenuItemActionPerformed(evt);
@@ -690,7 +685,7 @@ public class MainWindow extends javax.swing.JFrame {
             searchMessageLabel.setText(MESSAGE_MINIMUM_SEARCH_CHARS);
             return;
         }
-        searchText = searchText.replaceAll("[()-]", "");
+        searchText = Formater.removeFormatation(searchText);
         int selectedIndex = searchComboBox.getSelectedIndex();
         Map<String, String> properties = new HashMap<>();
         switch (selectedIndex) {
@@ -713,11 +708,8 @@ public class MainWindow extends javax.swing.JFrame {
         searchMessageLabel.setText(String.format(MESSAGE_CLIENT_FOUND, howMany));
     }//GEN-LAST:event_searchButtonActionPerformed
 
-    private void incomingCallListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_incomingCallListValueChanged
-    }//GEN-LAST:event_incomingCallListValueChanged
-
     private void incomingCallListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_incomingCallListMouseClicked
-        String selected = (String) incomingCallList.getSelectedValue();
+	String selected = (String) incomingCallList.getSelectedValue();
         Customer customer = recentCallers.get(selected);
         if (customer != null) {
             populateCustomer(customer);
@@ -729,6 +721,7 @@ public class MainWindow extends javax.swing.JFrame {
     private void autoRecordMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoRecordMenuItemActionPerformed
         try {
             VoiceRecorder.toggleAutoRecording();
+            updateUIRecordState();
         } catch (IOException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, "Cannot toggle auto record.", ex);
         }
@@ -741,12 +734,8 @@ public class MainWindow extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
-        recordButton.setEnabled(false);
-        recordStatusLabel.setText("Parado");
+        updateUIRecordState();
     }//GEN-LAST:event_recordButtonActionPerformed
-
-    private void searchTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchTextFieldActionPerformed
-    }//GEN-LAST:event_searchTextFieldActionPerformed
 
     private void searchTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTextFieldKeyPressed
         if (evt.getKeyChar() == KeyEvent.VK_ENTER) {
@@ -851,10 +840,10 @@ public class MainWindow extends javax.swing.JFrame {
     public void populateCustomer(Customer customer) {
         City city = customer.getCity();
         nameLabel.setText(customer.getName());
-        cpfCnpjLabel.setText(customer.getCpfCnpj());
-        residentialPhoneLabel.setText(customer.getResidentialPhone());
-        faxLabel.setText(customer.getFax());
-        cellPhoneLabel.setText(customer.getCellPhone());
+        cpfCnpjLabel.setText(Formater.formatCpfCnpj(customer.getCpfCnpj()));
+        residentialPhoneLabel.setText(Formater.formatPhone(customer.getResidentialPhone()));
+        faxLabel.setText(Formater.formatPhone(customer.getFax()));
+        cellPhoneLabel.setText(Formater.formatPhone(customer.getCellPhone()));
         emailLabel.setText(customer.getEmail());
         addressLabel.setText(customer.getAddress());
         districtLabel.setText(customer.getDistrict());
@@ -862,8 +851,8 @@ public class MainWindow extends javax.swing.JFrame {
         stateAbbreviationLabel.setText((city != null) ? city.getStateAbbreviation() : "");
         districtLabel.setText(customer.getDistrict());
         municipalityLabel.setText((city != null) ? city.getMunicipality() : "");
-        primaryBusinessPhoneLabel.setText(customer.getPrimaryBusinessPhone());
-        secondaryBusinessPhoneLabel.setText(customer.getSecondaryBusinessPhone());
+        primaryBusinessPhoneLabel.setText(Formater.formatPhone(customer.getPrimaryBusinessPhone()));
+        secondaryBusinessPhoneLabel.setText(Formater.formatPhone(customer.getSecondaryBusinessPhone()));
         legalPersonLabel.setText(customer.getLegalPerson());
         corporateNameLabel.setText(customer.getCorporateName());
         birthDateLabel.setText(customer.getBirthDate());
@@ -880,21 +869,21 @@ public class MainWindow extends javax.swing.JFrame {
         customer.setName("<Cliente não encontrado>");
         customer.setAddress("---");
         customer.setBirthDate("--/--/----");
-        customer.setPrimaryBusinessPhone("(--) --------");
-        customer.setSecondaryBusinessPhone("(--) --------");
-        customer.setCellPhone("(--) --------");
+        customer.setPrimaryBusinessPhone("----------");
+        customer.setSecondaryBusinessPhone("----------");
+        customer.setCellPhone("----------");
         customer.setCorporateName("---");
         customer.setCpfCnpj("---");
         customer.setDistrict("---");
         customer.setEmail("---");
-        customer.setFax("(--) --------");
+        customer.setFax("----------");
         customer.setLegalPerson("---");
         city.setMunicipality("---");
         customer.setObservation("");
         customer.setPost('N');
         customer.setProblems('N');
         customer.setRecortDate("--/--/----");
-        customer.setResidentialPhone("(--) --------");
+        customer.setResidentialPhone("----------");
         city.setStateAbbreviation("---");
         populateCustomer(customer);
     }
@@ -909,10 +898,21 @@ public class MainWindow extends javax.swing.JFrame {
             recentCallers.put(recentCallText, caller);
             appendCallerList(recentCallText);
         }
+        updateUIRecordState();
+    }
+    
+    public void updateUIRecordState() {
+        boolean buttonEnabled = false;
+        String label = "Parado";
         if (VoiceRecorder.isRecording()) {
-            recordButton.setEnabled(true);
-            recordStatusLabel.setText("Gravando");
+            buttonEnabled = true;
+            label = "Gravando";
+            startRecordTimer();
+        } else {
+            stopRecordTimer();
         }
+        recordButton.setEnabled(buttonEnabled);
+        recordStatusLabel.setText(label);
     }
 
     public void stopRecordTimer() {
@@ -961,5 +961,9 @@ public class MainWindow extends javax.swing.JFrame {
         }
         incomingCallList.setModel(listModel);
         incomingCallList.setSelectedIndex(0);
+        if (recentCallers.size() > MAX_RECENT_CALLS_TO_SHOW) {
+            // recentCallers.pollLastEntry();
+        }
+        System.out.println("recentCallers.size :" + recentCallers.size());
     }
 }

@@ -1,5 +1,7 @@
-package identicall;
+package helper;
 
+import identicall.PhoneLineWatcher;
+import helper.AppProperties;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;

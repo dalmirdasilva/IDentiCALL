@@ -4,6 +4,6 @@ import dao.CityDAO;
 import entity.City;
 
 public class CityHibernateDAO
-        extends GenericHibernateDAO<City, Long>
+        extends GenericHibernateDAO<City, String>
         implements CityDAO {
 }

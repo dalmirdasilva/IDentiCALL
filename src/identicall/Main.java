@@ -1,5 +1,7 @@
 package identicall;
 
+import helper.AppProperties;
+import helper.Formater;
 import dao.CityDAO;
 import dao.CustomerDAO;
 import dao.DAOFactory;
@@ -8,7 +10,7 @@ import dao.hibernate.CityHibernateDAO;
 import dao.hibernate.CustomerHibernateDAO;
 import dao.hibernate.HibernateDAOFactory;
 import dao.hibernate.IncomingCallHibernateDAO;
-import dbutil.Normalizer;
+import helper.Normalizer;
 import entity.City;
 import entity.Customer;
 import gnu.io.NoSuchPortException;
@@ -82,7 +84,7 @@ public class Main implements PhoneNumberReadyListener, CustomerSearcher {
                 }
             }
         }.start();
-        
+
         final Main instance = this;
         PhoneLineWatcher incomingCallListener = new PhoneLineWatcher(instance);
 
@@ -98,11 +100,11 @@ public class Main implements PhoneNumberReadyListener, CustomerSearcher {
 
     @Override
     public void processPhoneNumber(String number) {
-        Map<String, String> propertiesMap = new HashMap<>();
-        propertiesMap.put(Customer.CELL_PHONE_COLUMN, number);
-        propertiesMap.put(Customer.PRIMARY_BUSINESS_PHONE_COLUMN, number);
-        propertiesMap.put(Customer.RESIDENTIAL_PHONE_COLUMN, number);
-        searchAndPopulateByProperties(propertiesMap, true);
+        Map<String, String> properties = new HashMap<>();
+        properties.put(Customer.CELL_PHONE_COLUMN, number);
+        properties.put(Customer.PRIMARY_BUSINESS_PHONE_COLUMN, number);
+        properties.put(Customer.RESIDENTIAL_PHONE_COLUMN, number);
+        searchAndPopulateByProperties(properties, true);
     }
 
     private int searchAndPopulateByProperties(Map<String, String> properties, boolean fromLine) {
@@ -122,10 +124,7 @@ public class Main implements PhoneNumberReadyListener, CustomerSearcher {
         Customer customer = size > 0 ? customers.get(0) : null;
         if (fromLine) {
             try {
-                if (VoiceRecorder.isEnabled()) {
-                    VoiceRecorder.startRecording(customer, phone);
-                    window.startRecordTimer();
-                }
+                VoiceRecorder.startRecording(customer, phone);
             } catch (IOException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }

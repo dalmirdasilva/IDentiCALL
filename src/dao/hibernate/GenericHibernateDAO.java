@@ -84,11 +84,11 @@ public abstract class GenericHibernateDAO<T, K extends Serializable>
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<T> findByAttributes(Map<String, String> attributeMap) {
+    public List<T> findByAttributes(Map<String, String> attributes) {
         Criteria criteria = session.createCriteria(getPersistentClass());
-        if (attributeMap != null) {
+        if (attributes != null) {
             Disjunction disjunction = Restrictions.disjunction();
-            for (Map.Entry<String, String> entry : attributeMap.entrySet()) {
+            for (Map.Entry<String, String> entry : attributes.entrySet()) {
                 disjunction.add(Restrictions.ilike(entry.getKey(), "%" + entry.getValue() + "%"));
             }
             criteria.add(disjunction);

@@ -15,7 +15,7 @@ public class IncomingCall implements Serializable {
 
     @Id
     @GeneratedValue
-    private long id;
+    private String id;
     private String number;
     @Column(name = "call_at")
     private Date callAt;
@@ -23,17 +23,16 @@ public class IncomingCall implements Serializable {
     public IncomingCall() {
     }
 
-    public IncomingCall(long id, String number, Date callAt) {
-        this.id = id;
+    public IncomingCall(String number, Date callAt) {
         this.number = number;
         this.callAt = callAt;
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

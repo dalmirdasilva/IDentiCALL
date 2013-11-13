@@ -1,5 +1,6 @@
 package identicall;
 
+import helper.AppProperties;
 import entity.Customer;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -66,14 +67,13 @@ public class VoiceRecorder {
     }
 
     public static void disableAutoRecording() throws IOException {
-        System.out.println("disableAutoRecording");
+        System.out.println("GO HERE");
         AppProperties.getProperties().setProperty(AUTO_RECORD_PROPERTY, "false");
-        enabled = false;
         stopRecording();
+        enabled = false;
     }
 
     public static void enableAutoRecording() throws IOException {
-        System.out.println("enableAutoRecording");
         AppProperties.getProperties().setProperty(AUTO_RECORD_PROPERTY, "true");
         enabled = true;
     }

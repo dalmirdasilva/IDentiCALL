@@ -1,5 +1,7 @@
 package identicall;
 
+import helper.DiagnosticRunner;
+import helper.AppProperties;
 import serialclient.SerialClient;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
