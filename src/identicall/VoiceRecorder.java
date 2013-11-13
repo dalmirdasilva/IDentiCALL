@@ -42,7 +42,6 @@ public class VoiceRecorder {
             Field pidField = recorderProcess.getClass().getDeclaredField("pid");
             pidField.setAccessible(true);
             lastRecordPIDNumber = pidField.getInt(recorderProcess);
-            System.out.println("pid: " + lastRecordPIDNumber);
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
             Logger.getLogger(VoiceRecorder.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -50,7 +49,6 @@ public class VoiceRecorder {
 
     private static void stopRecordProcess() throws IOException {
         if (recorderProcess != null) {
-            System.out.println("recorderProcess.destroy();");
             recorderProcess.destroy();
             if (lastRecordPIDNumber > 0) {
                 Runtime runtime = Runtime.getRuntime();
@@ -67,14 +65,11 @@ public class VoiceRecorder {
     }
 
     public static void disableAutoRecording() throws IOException {
-        System.out.println("GO HERE");
-        AppProperties.getProperties().setProperty(AUTO_RECORD_PROPERTY, "false");
         stopRecording();
         enabled = false;
     }
 
     public static void enableAutoRecording() throws IOException {
-        AppProperties.getProperties().setProperty(AUTO_RECORD_PROPERTY, "true");
         enabled = true;
     }
 
@@ -93,7 +88,6 @@ public class VoiceRecorder {
             }
             recording = true;
             lauchRecordProcess(getOutputFile(customer, phone));
-            System.out.println("should record");
         }
     }
 
@@ -120,13 +114,8 @@ public class VoiceRecorder {
         }
         String fileName = calendar.get(Calendar.HOUR) + "_" + calendar.get(Calendar.MINUTE) + "_" + calendar.get(Calendar.SECOND) + "_" + customerName + "_" + phone + ".wav";
         File targetFile = new File(targetDirectory, fileName);
-        System.out.println("targetFile: " + targetFile);
         targetFile.createNewFile();
         return targetFile;
-    }
-
-    private static String getRecordingPath() {
-        return "";
     }
 
     public static boolean isEnabled() {
