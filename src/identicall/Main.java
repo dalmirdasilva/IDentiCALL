@@ -58,7 +58,7 @@ public class Main implements PhoneNumberReadyListener, CustomerSearcher {
             AnnotationConfiguration c = new AnnotationConfiguration();
             c.addAnnotatedClass(Customer.class);
             c.addAnnotatedClass(City.class);
-            c.configure(AppProperties.getProperties().getProperty(HIBERNATE_CFG_PROPERTY));
+            c.configure(AppProperties.getProperty(HIBERNATE_CFG_PROPERTY));
             sessionFactory = c.buildSessionFactory();
             session = sessionFactory.openSession();
         } catch (HibernateException ex) {

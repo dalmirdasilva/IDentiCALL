@@ -2,6 +2,7 @@ package view;
 
 import entity.City;
 import entity.Customer;
+import helper.AppProperties;
 import helper.Formater;
 import identicall.CustomerSearcher;
 import identicall.VoiceRecorder;
@@ -13,8 +14,21 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 
 public class MainWindow extends javax.swing.JFrame {
+
+    final private static int PHONE_SEARCH_TYPE_INDEX = 0;
+    final private static int CPFCNPJ_SEARCH_TYPE_INDEX = 1;
+    final private static int NAME_SEARCH_TYPE_INDEX = 2;
+    final private static int MAX_RECENT_CALLS_TO_SHOW = 20;
+    final private static int MINIMUM_SEARCH_CHARS = 3;
+    final private static String MESSAGE_CLIENT_FOUND = "%s cliente(s) encontrado(s).";
+    final private static String MESSAGE_MINIMUM_SEARCH_CHARS = "Preencha o campo.";
+    final private static String ICON_FILE_PATH_PROPERTY = "iconfilepath";
+    private final CustomerSearcher customerSearcher;
+    private TreeMap<String, Customer> recentCallers;
+    private Thread recortTimerThread;
 
     static {
         try {
@@ -28,16 +42,6 @@ public class MainWindow extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
     }
-    final private static int PHONE_SEARCH_TYPE_INDEX = 0;
-    final private static int CPFCNPJ_SEARCH_TYPE_INDEX = 1;
-    final private static int NAME_SEARCH_TYPE_INDEX = 2;
-    final private static int MAX_RECENT_CALLS_TO_SHOW = 20;
-    final private static int MINIMUM_SEARCH_CHARS = 3;
-    final private static String MESSAGE_CLIENT_FOUND = "%s cliente(s) encontrado(s).";
-    final private static String MESSAGE_MINIMUM_SEARCH_CHARS = "Preencha o campo.";
-    private final CustomerSearcher customerSearcher;
-    private TreeMap<String, Customer> recentCallers;
-    private Thread recortTimerThread;
 
     /**
      * Creates new form MainWindow
@@ -46,7 +50,7 @@ public class MainWindow extends javax.swing.JFrame {
      */
     public MainWindow(CustomerSearcher customerSearcher) {
         initComponents();
-
+        setIconAndTitle();
         this.customerSearcher = customerSearcher;
         this.recentCallers = new TreeMap<>();
     }
@@ -711,7 +715,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void incomingCallListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_incomingCallListMouseClicked
-	String selected = (String) incomingCallList.getSelectedValue();
+        String selected = (String) incomingCallList.getSelectedValue();
         Customer customer = recentCallers.get(selected);
         if (customer != null) {
             populateCustomer(customer);
@@ -902,7 +906,7 @@ public class MainWindow extends javax.swing.JFrame {
         }
         updateUIRecordState();
     }
-    
+
     public void updateUIRecordState() {
         boolean buttonEnabled = false;
         String label = "Parado";
@@ -967,5 +971,16 @@ public class MainWindow extends javax.swing.JFrame {
             // recentCallers.pollLastEntry();
         }
         System.out.println("recentCallers.size :" + recentCallers.size());
+    }
+
+    private void setIconAndTitle() {
+        try {
+            String iconFilePath = AppProperties.getProperty(ICON_FILE_PATH_PROPERTY);
+            ImageIcon imageIcon = new ImageIcon(iconFilePath);
+            setIconImage(imageIcon.getImage());
+            setTitle("IDentiCALL");
+        } catch (IOException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

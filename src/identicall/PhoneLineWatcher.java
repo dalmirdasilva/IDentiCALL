@@ -79,9 +79,8 @@ public class PhoneLineWatcher implements SerialPortEventListener {
     private void connectSerialClient() throws
             NoSuchPortException, PortInUseException, UnsupportedCommOperationException, TooManyListenersException, IOException, SerialClientException {
 
-        if (AppProperties.getProperties().getProperty(FAKE_SERIAL_PROPERTY).equals("false")) {
-
-            serialClient.connect(AppProperties.getProperties().getProperty(SERIAL_PORT_PATH_PROPERTY));
+        if (AppProperties.getProperty(FAKE_SERIAL_PROPERTY).equals("false")) {
+            serialClient.connect(AppProperties.getProperty(SERIAL_PORT_PATH_PROPERTY));
             serialClient.addSerialPortEventListener(this);
         } else {
 

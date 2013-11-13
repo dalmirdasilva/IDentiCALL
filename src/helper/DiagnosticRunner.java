@@ -18,7 +18,7 @@ public class DiagnosticRunner {
 
     private static void removeLockFile() throws IOException {
         Logger.getLogger(DiagnosticRunner.class.getName()).log(Level.INFO, "Trying to remove lock file.");
-        String serialPortName = AppProperties.getProperties().getProperty(PhoneLineWatcher.SERIAL_PORT_NAME_PROPERTY);
+        String serialPortName = AppProperties.getProperty(PhoneLineWatcher.SERIAL_PORT_NAME_PROPERTY);
         File lock = new File(LOCK_FILE_PATH_PREFIX + serialPortName);
         if (lock.exists()) {
             lock.delete();

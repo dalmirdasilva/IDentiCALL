@@ -44,12 +44,12 @@ public class Normalizer {
     }
 
     private static boolean isNormalized() throws IOException {
-        File file = new File(AppProperties.getProperties().getProperty(NORMALIZE_LOCK_FILE_PROPERTY));
+        File file = new File(AppProperties.getProperty(NORMALIZE_LOCK_FILE_PROPERTY));
         return file.exists();
     }
 
     private static void createNormalizeLockFile() throws IOException {
-        File file = new File(AppProperties.getProperties().getProperty(NORMALIZE_LOCK_FILE_PROPERTY));
+        File file = new File(AppProperties.getProperty(NORMALIZE_LOCK_FILE_PROPERTY));
         file.createNewFile();
     }
     

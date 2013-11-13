@@ -25,7 +25,7 @@ public class VoiceRecorder {
 
     static {
         try {
-            enabled = AppProperties.getProperties().getProperty(AUTO_RECORD_PROPERTY).endsWith("true");
+            enabled = AppProperties.getProperty(AUTO_RECORD_PROPERTY).endsWith("true");
         } catch (IOException ex) {
             enabled = false;
             Logger.getLogger(VoiceRecorder.class.getName()).log(Level.SEVERE, "Cannot determine auto record property.", ex);
@@ -34,7 +34,7 @@ public class VoiceRecorder {
 
     private static void lauchRecordProcess(File outputFile) throws IOException {
         stopRecordProcess();
-        String command = AppProperties.getProperties().getProperty(RECORDER_COMMAND_PROPERTY);
+        String command = AppProperties.getProperty(RECORDER_COMMAND_PROPERTY);
         command = String.format(command, outputFile.getAbsolutePath());
         Runtime runtime = Runtime.getRuntime();
         recorderProcess = runtime.exec(command);
@@ -52,7 +52,7 @@ public class VoiceRecorder {
             recorderProcess.destroy();
             if (lastRecordPIDNumber > 0) {
                 Runtime runtime = Runtime.getRuntime();
-                Object recorder = AppProperties.getProperties().get(RECORDER_PROPERTY);
+                Object recorder = AppProperties.getProperty(RECORDER_PROPERTY);
                 Process recorders = runtime.exec("killall " + recorder);
                 try {
                     recorders.waitFor();
@@ -66,10 +66,14 @@ public class VoiceRecorder {
 
     public static void disableAutoRecording() throws IOException {
         stopRecording();
+        AppProperties.setProperty(AUTO_RECORD_PROPERTY, "false");
+        AppProperties.storeProperties();
         enabled = false;
     }
 
     public static void enableAutoRecording() throws IOException {
+        AppProperties.setProperty(AUTO_RECORD_PROPERTY, "true");
+        AppProperties.storeProperties();
         enabled = true;
     }
 
@@ -95,12 +99,11 @@ public class VoiceRecorder {
         if (enabled && recording) {
             recording = false;
             stopRecordProcess();
-            System.out.println("should stop recording");
         }
     }
 
     private static File getOutputFile(Customer customer, String phone) throws IOException {
-        String outputPath = AppProperties.getProperties().getProperty(OUTPUT_PATH_PROPERTY);
+        String outputPath = AppProperties.getProperty(OUTPUT_PATH_PROPERTY);
         Calendar calendar = new GregorianCalendar();
         File baseDirectory = new File(outputPath);
         String targetName = calendar.get(Calendar.DAY_OF_MONTH) + "_" + (calendar.get(Calendar.MONTH) + 1) + "_" + calendar.get(Calendar.YEAR);
