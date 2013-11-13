@@ -603,7 +603,7 @@
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="recordLabelFixed" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="recordLabel" max="32767" attributes="0"/>
+                                      <Component id="recordDateLabel" max="32767" attributes="0"/>
                                   </Group>
                                   <Group type="102" attributes="0">
                                       <Group type="103" groupAlignment="0" attributes="0">
@@ -689,7 +689,7 @@
                           <Component id="birthDateLabelFixed" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="birthDateLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="recordLabelFixed" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="recordLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="recordDateLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -918,7 +918,7 @@
                 <Property name="text" type="java.lang.String" value="Data Cadastro:"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="recordLabel">
+            <Component class="javax.swing.JLabel" name="recordDateLabel">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Ubuntu" size="16" style="0"/>

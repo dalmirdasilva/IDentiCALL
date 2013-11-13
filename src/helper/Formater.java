@@ -1,9 +1,12 @@
 package helper;
 
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
 
 public class Formater {
-    
+
     public static String formatRecentCall(String phone, Calendar calendar) {
         return formatPhone(phone) + " @ " + formatDateTime(calendar);
     }
@@ -51,12 +54,12 @@ public class Formater {
         }
         return number;
     }
-    
+
     /**
      * 584.658.251-55
-     * 
+     *
      * @param number
-     * @return 
+     * @return
      */
     private static String formatCpf(String number) {
         StringBuilder result = new StringBuilder();
@@ -69,12 +72,12 @@ public class Formater {
         result.append(number.substring(9, 11));
         return result.toString();
     }
-    
+
     /**
      * 01.234.569/9052-34
-     * 
+     *
      * @param number
-     * @return 
+     * @return
      */
     private static String formatCnpj(String number) {
         StringBuilder result = new StringBuilder();
@@ -89,9 +92,33 @@ public class Formater {
         result.append(number.substring(12, 14));
         return result.toString();
     }
-    
+
     public static String removeFormatation(String formated) {
         String regex = "[/()-. ]";
         return formated.replaceAll(regex, "");
+    }
+
+    public static String formatStringDate(String dateString) {
+        if (dateString == null) {
+            return "";
+        }
+        if (dateString.length() < 21) {
+            return dateString;
+        }
+        String[] parts = dateString.split(" ");
+        if (parts.length < 2) {
+            return dateString;
+        }
+        List<String> datePart = Arrays.asList(parts[0].split("-"));
+        Collections.reverse(datePart);
+        StringBuilder result = new StringBuilder();
+        int i = 1;
+        for (String part : datePart) {
+            result.append(part);
+            if (i++ < datePart.size()) {
+                result.append("/");
+            }
+        }
+        return result.toString();
     }
 }

@@ -109,6 +109,9 @@ public class Main implements PhoneNumberReadyListener, CustomerSearcher {
 
     private int searchAndPopulateByProperties(Map<String, String> properties, boolean fromLine) {
         List<Customer> customers;
+        if (window == null) {
+            return 0;
+        }
         try {
             customers = customerDAO.findByAttributes(properties);
         } catch (ObjectNotFoundException ex) {

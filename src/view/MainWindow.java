@@ -5,17 +5,14 @@ import entity.Customer;
 import helper.Formater;
 import identicall.CustomerSearcher;
 import identicall.VoiceRecorder;
-import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
-import javax.swing.event.ListSelectionEvent;
 
 public class MainWindow extends javax.swing.JFrame {
 
@@ -31,6 +28,9 @@ public class MainWindow extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
     }
+    final private static int PHONE_SEARCH_TYPE_INDEX = 0;
+    final private static int CPFCNPJ_SEARCH_TYPE_INDEX = 1;
+    final private static int NAME_SEARCH_TYPE_INDEX = 2;
     final private static int MAX_RECENT_CALLS_TO_SHOW = 20;
     final private static int MINIMUM_SEARCH_CHARS = 3;
     final private static String MESSAGE_CLIENT_FOUND = "%s cliente(s) encontrado(s).";
@@ -110,7 +110,7 @@ public class MainWindow extends javax.swing.JFrame {
         legalPersonLavelFixed = new javax.swing.JLabel();
         legalPersonLabel = new javax.swing.JLabel();
         recordLabelFixed = new javax.swing.JLabel();
-        recordLabel = new javax.swing.JLabel();
+        recordDateLabel = new javax.swing.JLabel();
         postLabelFixed = new javax.swing.JLabel();
         postLabel = new javax.swing.JLabel();
         problemsLabelFixed = new javax.swing.JLabel();
@@ -435,8 +435,8 @@ public class MainWindow extends javax.swing.JFrame {
         recordLabelFixed.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
         recordLabelFixed.setText("Data Cadastro:");
 
-        recordLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
-        recordLabel.setText("--/--/----");
+        recordDateLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
+        recordDateLabel.setText("--/--/----");
 
         postLabelFixed.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
         postLabelFixed.setText("Correio:");
@@ -550,7 +550,7 @@ public class MainWindow extends javax.swing.JFrame {
                             .addGroup(formPanelLayout.createSequentialGroup()
                                 .addComponent(recordLabelFixed)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(recordLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(recordDateLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(formPanelLayout.createSequentialGroup()
                                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(formPanelLayout.createSequentialGroup()
@@ -619,7 +619,7 @@ public class MainWindow extends javax.swing.JFrame {
                     .addComponent(birthDateLabelFixed)
                     .addComponent(birthDateLabel)
                     .addComponent(recordLabelFixed)
-                    .addComponent(recordLabel))
+                    .addComponent(recordDateLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(legalPersonLavelFixed)
@@ -685,19 +685,21 @@ public class MainWindow extends javax.swing.JFrame {
             searchMessageLabel.setText(MESSAGE_MINIMUM_SEARCH_CHARS);
             return;
         }
-        searchText = Formater.removeFormatation(searchText);
         int selectedIndex = searchComboBox.getSelectedIndex();
+        if (selectedIndex != NAME_SEARCH_TYPE_INDEX) {
+            searchText = Formater.removeFormatation(searchText);
+        }
         Map<String, String> properties = new HashMap<>();
         switch (selectedIndex) {
-            case 0:
+            case PHONE_SEARCH_TYPE_INDEX:
                 properties.put(Customer.PRIMARY_BUSINESS_PHONE_COLUMN, searchText);
                 properties.put(Customer.CELL_PHONE_COLUMN, searchText);
                 properties.put(Customer.RESIDENTIAL_PHONE_COLUMN, searchText);
                 break;
-            case 1:
+            case CPFCNPJ_SEARCH_TYPE_INDEX:
                 properties.put(Customer.CPF_CNPJ_COLUMN, searchText);
                 break;
-            case 2:
+            case NAME_SEARCH_TYPE_INDEX:
                 properties.put(Customer.NAME_COLUMN, searchText);
                 break;
         }
@@ -815,8 +817,8 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel projectDescriptionLabel;
     private javax.swing.JLabel projectLabel;
     private javax.swing.JButton recordButton;
+    private javax.swing.JLabel recordDateLabel;
     private javax.swing.JLabel recordFixedLabel;
-    private javax.swing.JLabel recordLabel;
     private javax.swing.JLabel recordLabelFixed;
     private javax.swing.JLabel recordStatusLabel;
     private javax.swing.JLabel recordTimeLabel;
@@ -855,8 +857,8 @@ public class MainWindow extends javax.swing.JFrame {
         secondaryBusinessPhoneLabel.setText(Formater.formatPhone(customer.getSecondaryBusinessPhone()));
         legalPersonLabel.setText(customer.getLegalPerson());
         corporateNameLabel.setText(customer.getCorporateName());
-        birthDateLabel.setText(customer.getBirthDate());
-        recordLabel.setText(customer.getRecortDate());
+        birthDateLabel.setText(Formater.formatStringDate(customer.getBirthDate()));
+        recordDateLabel.setText(Formater.formatStringDate(customer.getRecortDate()));
         postLabel.setText(String.valueOf(customer.getPost()));
         problemsLabel.setText(String.valueOf(customer.getProblems()));
         observationTextPane.setText(customer.getObservation());
