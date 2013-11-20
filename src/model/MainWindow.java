@@ -281,7 +281,7 @@ public class MainWindow extends javax.swing.JFrame {
         );
         incomingCallMainPanelLayout.setVerticalGroup(
             incomingCallMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(incomingCallScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 526, Short.MAX_VALUE)
+            .addComponent(incomingCallScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE)
         );
 
         rightSidePanel.add(incomingCallMainPanel, java.awt.BorderLayout.CENTER);
@@ -342,7 +342,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(searchMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 578, Short.MAX_VALUE)
+                .addComponent(searchMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 848, Short.MAX_VALUE)
                 .addGap(77, 77, 77))
         );
         searchPanelLayout.setVerticalGroup(
@@ -574,7 +574,7 @@ public class MainWindow extends javax.swing.JFrame {
                                 .addComponent(cpfCnpjLabelFixed, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(cpfCnpjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 385, Short.MAX_VALUE)))
+                        .addGap(0, 228, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         formPanelLayout.setVerticalGroup(
@@ -641,7 +641,7 @@ public class MainWindow extends javax.swing.JFrame {
                         .addComponent(observationLabelFixed))
                     .addComponent(municipalityLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(observationScrollPannel, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
+                .addComponent(observationScrollPannel, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -677,7 +677,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         tabbedPane.addTab("Lista de clientes", scrollPane);
 
-        bodyPanel.add(tabbedPane, java.awt.BorderLayout.PAGE_END);
+        bodyPanel.add(tabbedPane, java.awt.BorderLayout.LINE_START);
         tabbedPane.getAccessibleContext().setAccessibleName("clientTab");
         tabbedPane.getAccessibleContext().setAccessibleDescription("");
 
