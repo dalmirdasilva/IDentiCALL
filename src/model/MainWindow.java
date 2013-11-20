@@ -3,6 +3,7 @@ package model;
 import entity.Customer;
 import identicall.CustomerSearcher;
 import identicall.VoiceRecorder;
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.HashMap;
@@ -43,6 +44,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         this.customerSearcher = customerSearcher;
         this.recentCallers = new HashMap<>();
+        clientTable.getTableHeader().setVisible(false);
     }
 
     /**
@@ -77,6 +79,7 @@ public class MainWindow extends javax.swing.JFrame {
         searchTextField = new javax.swing.JTextField();
         searchComboBox = new javax.swing.JComboBox();
         searchButton = new javax.swing.JButton();
+        tabbedPane = new javax.swing.JTabbedPane();
         formPanel = new javax.swing.JPanel();
         nameLabel = new javax.swing.JLabel();
         cpfCnpjLabelFixed = new javax.swing.JLabel();
@@ -118,6 +121,8 @@ public class MainWindow extends javax.swing.JFrame {
         municipalityLabel = new javax.swing.JLabel();
         secondaryBusinessPhoneLabelFixed = new javax.swing.JLabel();
         secondaryBusinessPhoneLabel = new javax.swing.JLabel();
+        scrollPane = new javax.swing.JScrollPane();
+        clientTable = new javax.swing.JTable();
         menuBar = new javax.swing.JMenuBar();
         fileMenuItem = new javax.swing.JMenu();
         autoRecordMenuItem = new javax.swing.JMenuItem();
@@ -194,7 +199,7 @@ public class MainWindow extends javax.swing.JFrame {
         leftPanelLayout.setHorizontalGroup(
             leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(leftPanelLayout.createSequentialGroup()
-                .addContainerGap(97, Short.MAX_VALUE)
+                .addContainerGap(478, Short.MAX_VALUE)
                 .addComponent(recordFixedLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(recordStatusLabel)
@@ -272,18 +277,19 @@ public class MainWindow extends javax.swing.JFrame {
         incomingCallMainPanel.setLayout(incomingCallMainPanelLayout);
         incomingCallMainPanelLayout.setHorizontalGroup(
             incomingCallMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(incomingCallScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(incomingCallScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         incomingCallMainPanelLayout.setVerticalGroup(
             incomingCallMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(incomingCallScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 519, Short.MAX_VALUE)
+            .addComponent(incomingCallScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 526, Short.MAX_VALUE)
         );
 
         rightSidePanel.add(incomingCallMainPanel, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(rightSidePanel, java.awt.BorderLayout.LINE_END);
 
-        bodyPanel.setBackground(new java.awt.Color(255, 255, 255));
+        bodyPanel.setBackground(new java.awt.Color(195, 217, 255));
+        bodyPanel.setPreferredSize(new java.awt.Dimension(500, 135));
         bodyPanel.setLayout(new java.awt.BorderLayout());
 
         searchPanel.setBackground(new java.awt.Color(195, 217, 255));
@@ -336,7 +342,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(searchMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
+                .addComponent(searchMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 578, Short.MAX_VALUE)
                 .addGap(77, 77, 77))
         );
         searchPanelLayout.setVerticalGroup(
@@ -351,7 +357,12 @@ public class MainWindow extends javax.swing.JFrame {
 
         bodyPanel.add(searchPanel, java.awt.BorderLayout.PAGE_START);
 
+        tabbedPane.setBackground(new java.awt.Color(195, 217, 255));
+        tabbedPane.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 0));
+
         formPanel.setBackground(new java.awt.Color(254, 254, 254));
+        formPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 0));
+        formPanel.setPreferredSize(new java.awt.Dimension(1002, 409));
 
         nameLabel.setFont(new java.awt.Font("Ubuntu", 0, 36)); // NOI18N
         nameLabel.setText("<Cliente não econtrado>");
@@ -481,78 +492,54 @@ public class MainWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(observationScrollPannel)
-                    .addComponent(observationLabelFixed)
-                    .addGroup(formPanelLayout.createSequentialGroup()
-                        .addComponent(cpfCnpjLabelFixed, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cpfCnpjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(formPanelLayout.createSequentialGroup()
                         .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addGroup(formPanelLayout.createSequentialGroup()
-                                    .addComponent(birthDateLabelFixed)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(birthDateLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGroup(formPanelLayout.createSequentialGroup()
-                                    .addComponent(legalPersonLavelFixed)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(legalPersonLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGroup(formPanelLayout.createSequentialGroup()
-                                    .addComponent(cellPhoneLabelFixed)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(cellPhoneLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGroup(formPanelLayout.createSequentialGroup()
-                                    .addComponent(residentialPhoneLavelFixed)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(residentialPhoneLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGroup(formPanelLayout.createSequentialGroup()
-                                    .addComponent(primaryBusinessPhoneLabelFixed)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(primaryBusinessPhoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(stateAbbreviationLabelFixed)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(stateAbbreviationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(districtLabelFixed)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(districtLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(secondaryBusinessPhoneLabelFixed)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(secondaryBusinessPhoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(22, 22, 22)
-                        .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(addressLabelFixed)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(addressLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(emailLabelFixed)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(emailLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(cityLabelFixed)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cityLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(municipalityLabelFixed)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(municipalityLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(corporateNameLabelFixed)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(corporateNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(recordLabelFixed)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(recordLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 748, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(formPanelLayout.createSequentialGroup()
                                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addGroup(formPanelLayout.createSequentialGroup()
+                                            .addComponent(birthDateLabelFixed)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(birthDateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(formPanelLayout.createSequentialGroup()
+                                            .addComponent(legalPersonLavelFixed)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(legalPersonLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addGroup(formPanelLayout.createSequentialGroup()
+                                            .addComponent(cellPhoneLabelFixed)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(cellPhoneLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addGroup(formPanelLayout.createSequentialGroup()
+                                            .addComponent(residentialPhoneLavelFixed)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(residentialPhoneLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addGroup(formPanelLayout.createSequentialGroup()
+                                            .addComponent(primaryBusinessPhoneLabelFixed)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(primaryBusinessPhoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                     .addGroup(formPanelLayout.createSequentialGroup()
-                                        .addComponent(faxLabelFixed)
+                                        .addComponent(stateAbbreviationLabelFixed)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(faxLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(stateAbbreviationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(formPanelLayout.createSequentialGroup()
+                                        .addComponent(districtLabelFixed)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(districtLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(formPanelLayout.createSequentialGroup()
+                                        .addComponent(secondaryBusinessPhoneLabelFixed)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(secondaryBusinessPhoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(22, 22, 22)
+                                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(formPanelLayout.createSequentialGroup()
+                                        .addComponent(recordLabelFixed)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(recordLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGroup(formPanelLayout.createSequentialGroup()
+                                        .addComponent(municipalityLabelFixed)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(municipalityLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                     .addGroup(formPanelLayout.createSequentialGroup()
                                         .addComponent(problemsLabelFixed)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -560,17 +547,42 @@ public class MainWindow extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(postLabelFixed)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(postLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 33, Short.MAX_VALUE))))
-                    .addComponent(nameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addComponent(postLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(formPanelLayout.createSequentialGroup()
+                                        .addComponent(corporateNameLabelFixed)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(corporateNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, formPanelLayout.createSequentialGroup()
+                                            .addComponent(cityLabelFixed)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(cityLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, formPanelLayout.createSequentialGroup()
+                                            .addComponent(addressLabelFixed)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(addressLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, formPanelLayout.createSequentialGroup()
+                                            .addComponent(emailLabelFixed)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(emailLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addGroup(formPanelLayout.createSequentialGroup()
+                                            .addComponent(faxLabelFixed)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(faxLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 374, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                            .addComponent(observationLabelFixed)
+                            .addGroup(formPanelLayout.createSequentialGroup()
+                                .addComponent(cpfCnpjLabelFixed, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cpfCnpjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 385, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         formPanelLayout.setVerticalGroup(
             formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(formPanelLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
+                .addContainerGap()
                 .addComponent(nameLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cpfCnpjLabelFixed)
                     .addComponent(cpfCnpjLabel))
@@ -599,39 +611,75 @@ public class MainWindow extends javax.swing.JFrame {
                     .addComponent(secondaryBusinessPhoneLabelFixed)
                     .addComponent(secondaryBusinessPhoneLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(municipalityLabelFixed)
-                    .addComponent(municipalityLabel)
-                    .addComponent(districtLabelFixed)
-                    .addComponent(districtLabel))
+                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(formPanelLayout.createSequentialGroup()
+                        .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(municipalityLabelFixed)
+                            .addComponent(districtLabelFixed)
+                            .addComponent(districtLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(corporateNameLabelFixed)
+                            .addComponent(corporateNameLabel)
+                            .addComponent(stateAbbreviationLabelFixed)
+                            .addComponent(stateAbbreviationLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(birthDateLabelFixed)
+                            .addComponent(recordLabelFixed)
+                            .addComponent(recordLabel)
+                            .addComponent(birthDateLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(legalPersonLavelFixed)
+                            .addComponent(legalPersonLabel)
+                            .addComponent(problemsLabelFixed)
+                            .addComponent(problemsLabel)
+                            .addComponent(postLabelFixed)
+                            .addComponent(postLabel))
+                        .addGap(18, 18, 18)
+                        .addComponent(observationLabelFixed))
+                    .addComponent(municipalityLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(corporateNameLabelFixed)
-                    .addComponent(corporateNameLabel)
-                    .addComponent(stateAbbreviationLabelFixed)
-                    .addComponent(stateAbbreviationLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(birthDateLabelFixed)
-                    .addComponent(birthDateLabel)
-                    .addComponent(recordLabelFixed)
-                    .addComponent(recordLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(legalPersonLavelFixed)
-                    .addComponent(legalPersonLabel)
-                    .addComponent(problemsLabelFixed)
-                    .addComponent(problemsLabel)
-                    .addComponent(postLabelFixed)
-                    .addComponent(postLabel))
-                .addGap(18, 18, 18)
-                .addComponent(observationLabelFixed)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(observationScrollPannel, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
+                .addComponent(observationScrollPannel, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        bodyPanel.add(formPanel, java.awt.BorderLayout.CENTER);
+        tabbedPane.addTab("Visualizar cliente", formPanel);
+
+        scrollPane.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 0));
+        scrollPane.setPreferredSize(new java.awt.Dimension(100, 100));
+
+        clientTable.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 0));
+        clientTable.setFont(new java.awt.Font("Ubuntu", 0, 13)); // NOI18N
+        clientTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4", "Title 5", "Title 6", "Title 7"
+            }
+        ));
+        clientTable.setGridColor(new java.awt.Color(207, 207, 207));
+        clientTable.setPreferredSize(new java.awt.Dimension(100, 100));
+        clientTable.setSelectionBackground(new java.awt.Color(194, 211, 229));
+        clientTable.setSelectionForeground(new java.awt.Color(62, 62, 62));
+        clientTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        clientTable.setShowHorizontalLines(false);
+        clientTable.setSurrendersFocusOnKeystroke(true);
+        clientTable.getTableHeader().setResizingAllowed(false);
+        clientTable.getTableHeader().setReorderingAllowed(false);
+        clientTable.setUpdateSelectionOnSort(false);
+        scrollPane.setViewportView(clientTable);
+
+        tabbedPane.addTab("Lista de clientes", scrollPane);
+
+        bodyPanel.add(tabbedPane, java.awt.BorderLayout.PAGE_END);
+        tabbedPane.getAccessibleContext().setAccessibleName("clientTab");
+        tabbedPane.getAccessibleContext().setAccessibleDescription("");
 
         getContentPane().add(bodyPanel, java.awt.BorderLayout.CENTER);
 
@@ -767,6 +815,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel cellPhoneLabelFixed;
     private javax.swing.JLabel cityLabel;
     private javax.swing.JLabel cityLabelFixed;
+    private javax.swing.JTable clientTable;
     private javax.swing.JLabel corporateNameLabel;
     private javax.swing.JLabel corporateNameLabelFixed;
     private javax.swing.JLabel cpfCnpjLabel;
@@ -815,6 +864,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel residentialPhoneLavelFixed;
     private javax.swing.JPanel rightPanel;
     private javax.swing.JPanel rightSidePanel;
+    private javax.swing.JScrollPane scrollPane;
     private javax.swing.JButton searchButton;
     private javax.swing.JComboBox searchComboBox;
     private javax.swing.JLabel searchLabel;
@@ -825,6 +875,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel secondaryBusinessPhoneLabelFixed;
     private javax.swing.JLabel stateAbbreviationLabel;
     private javax.swing.JLabel stateAbbreviationLabelFixed;
+    private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JLabel versionLabel;
     // End of variables declaration//GEN-END:variables
 
