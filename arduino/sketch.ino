@@ -1,13 +1,14 @@
-#define BLINK_LED         A2
-#define SIGNAL_LED        A3
+#define BLINK_LED           A2
+#define SIGNAL_LED          A3
 
-#define BIT_0             3
-#define BIT_1             4
-#define BIT_2             5
-#define BIT_3             6
+#define BIT_0               3
+#define BIT_1               4
+#define BIT_2               5
+#define BIT_3               6
 
-#define MAX_NUMBER_LENGHT 10
-#define LAST_DIGIT_MARK   ('0' + 15)
+#define MAX_NUMBER_LENGHT   15
+#define LAST_DIGIT_MARK     ('0' + 15)
+#define FIST_DISCARD_DIGITS 2
 
 unsigned char phoneNumberBufferPointer = 0;
 unsigned char phoneNumberBuffer[20];
@@ -15,6 +16,24 @@ volatile long lastRead = 0;
 volatile unsigned char digit = 0;
 unsigned long lastDigitTime = millis();
 unsigned long maxAcceptableTimeBetweenDigits = 500;
+unsigned char digitMap[16] = {
+  48, // 00 -> '0'
+  49, // 01 -> '1'
+  50, // 02 -> '2'
+  51, // 03 -> '3'
+  52, // 04 -> '4'
+  53, // 05 -> '5'
+  54, // 06 -> '6'
+  55, // 07 -> '7'
+  56, // 08 -> '8'
+  57, // 09 -> '9'
+  58, // 10 -> ':'
+  59, // 11 -> ';'
+  60, // 12 -> '<'
+  61, // 13 -> '='
+  62, // 14 -> '>'
+  63, // 15 -> '?'
+}
 
 void setup() {
   Serial.begin(9600);
@@ -56,9 +75,6 @@ void readDigit() {
 
 void processDigit(unsigned char digit) {
   unsigned long rightNow = millis();
-  Serial.print("Digit: ");
-  Serial.println(digit, HEX);
-
   if (rightNow - lastDigitTime > maxAcceptableTimeBetweenDigits) {
     discardBuffer();
   }
@@ -71,13 +87,17 @@ void discardBuffer() {
 }
 
 void consumeDigit(unsigned char digit) {
-  phoneNumberBuffer[phoneNumberBufferPointer++] = '0' + digit;
+  if (digit > 15) {
+    return;
+  }
+  char character = digitMap[digit];
+  phoneNumberBuffer[phoneNumberBufferPointer++] = character;
   checkNumberCompletion();
 }
 
 void checkNumberCompletion() {
   if (phoneNumberBufferPointer >= MAX_NUMBER_LENGHT || phoneNumberBuffer[phoneNumberBufferPointer - 1] == LAST_DIGIT_MARK) {
-    Serial.write(phoneNumberBuffer, phoneNumberBufferPointer);
+    Serial.write(&phoneNumberBuffer[FIST_DISCARD_DIGITS], phoneNumberBufferPointer - 1);
     Serial.write('\n');
     discardBuffer();
   }

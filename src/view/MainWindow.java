@@ -5,10 +5,11 @@ import entity.Customer;
 import helper.AppProperties;
 import helper.Formater;
 import identicall.CustomerSearcher;
-import identicall.VoiceRecorder;
+import identicall.VoiceRecorderFactory;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -29,6 +30,8 @@ public class MainWindow extends javax.swing.JFrame {
     private final CustomerSearcher customerSearcher;
     private TreeMap<String, Customer> recentCallers;
     private Thread recortTimerThread;
+    private List<Customer> lastSearchResult;
+    private int currentSearchResultIndex;
 
     static {
         try {
@@ -51,6 +54,7 @@ public class MainWindow extends javax.swing.JFrame {
     public MainWindow(CustomerSearcher customerSearcher) {
         initComponents();
         setIconAndTitle();
+        hidePaginationElements();
         this.customerSearcher = customerSearcher;
         this.recentCallers = new TreeMap<>();
     }
@@ -87,6 +91,9 @@ public class MainWindow extends javax.swing.JFrame {
         searchTextField = new javax.swing.JTextField();
         searchComboBox = new javax.swing.JComboBox();
         searchButton = new javax.swing.JButton();
+        previousButton = new javax.swing.JButton();
+        nextButton = new javax.swing.JButton();
+        currentSearchViewingIndexLabel = new javax.swing.JLabel();
         formPanel = new javax.swing.JPanel();
         nameLabel = new javax.swing.JLabel();
         cpfCnpjLabelFixed = new javax.swing.JLabel();
@@ -211,7 +218,7 @@ public class MainWindow extends javax.swing.JFrame {
         leftPanelLayout.setHorizontalGroup(
             leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(leftPanelLayout.createSequentialGroup()
-                .addContainerGap(97, Short.MAX_VALUE)
+                .addContainerGap(171, Short.MAX_VALUE)
                 .addComponent(recordFixedLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(recordStatusLabel)
@@ -284,7 +291,7 @@ public class MainWindow extends javax.swing.JFrame {
         incomingCallMainPanel.setLayout(incomingCallMainPanelLayout);
         incomingCallMainPanelLayout.setHorizontalGroup(
             incomingCallMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(incomingCallScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(incomingCallScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
         );
         incomingCallMainPanelLayout.setVerticalGroup(
             incomingCallMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -330,6 +337,27 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
+        previousButton.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
+        previousButton.setText("<");
+        previousButton.setPreferredSize(new java.awt.Dimension(73, 27));
+        previousButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                previousButtonActionPerformed(evt);
+            }
+        });
+
+        nextButton.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
+        nextButton.setText(">");
+        nextButton.setPreferredSize(new java.awt.Dimension(73, 27));
+        nextButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nextButtonActionPerformed(evt);
+            }
+        });
+
+        currentSearchViewingIndexLabel.setText("00/00");
+        currentSearchViewingIndexLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+
         javax.swing.GroupLayout searchPanelLayout = new javax.swing.GroupLayout(searchPanel);
         searchPanel.setLayout(searchPanelLayout);
         searchPanelLayout.setHorizontalGroup(
@@ -344,17 +372,26 @@ public class MainWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(searchMessageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
-                .addGap(77, 77, 77))
+                .addComponent(searchMessageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 207, Short.MAX_VALUE)
+                .addComponent(previousButton, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(currentSearchViewingIndexLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(nextButton, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         searchPanelLayout.setVerticalGroup(
             searchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, searchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+            .addGroup(searchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                 .addComponent(searchLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(searchMessageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addComponent(searchComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(previousButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(nextButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(currentSearchViewingIndexLabel))
         );
 
         bodyPanel.add(searchPanel, java.awt.BorderLayout.PAGE_START);
@@ -488,12 +525,8 @@ public class MainWindow extends javax.swing.JFrame {
             .addGroup(formPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(nameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(observationScrollPannel)
-                    .addComponent(observationLabelFixed)
-                    .addGroup(formPanelLayout.createSequentialGroup()
-                        .addComponent(cpfCnpjLabelFixed, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cpfCnpjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(formPanelLayout.createSequentialGroup()
                         .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -569,15 +602,22 @@ public class MainWindow extends javax.swing.JFrame {
                                         .addComponent(postLabelFixed)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(postLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 23, Short.MAX_VALUE))))
-                    .addComponent(nameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(0, 115, Short.MAX_VALUE))))
+                    .addGroup(formPanelLayout.createSequentialGroup()
+                        .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(observationLabelFixed)
+                            .addGroup(formPanelLayout.createSequentialGroup()
+                                .addComponent(cpfCnpjLabelFixed, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cpfCnpjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         formPanelLayout.setVerticalGroup(
             formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(formPanelLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addComponent(nameLabel)
+                .addContainerGap()
+                .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cpfCnpjLabelFixed)
@@ -635,7 +675,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(observationLabelFixed)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(observationScrollPannel, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
+                .addComponent(observationScrollPannel, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -686,7 +726,8 @@ public class MainWindow extends javax.swing.JFrame {
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
         String searchText = searchTextField.getText();
         if (searchText.length() < MINIMUM_SEARCH_CHARS) {
-            searchMessageLabel.setText(MESSAGE_MINIMUM_SEARCH_CHARS);
+            //searchMessageLabel.setText(MESSAGE_MINIMUM_SEARCH_CHARS);
+            hidePaginationElements();
             return;
         }
         int selectedIndex = searchComboBox.getSelectedIndex();
@@ -707,15 +748,35 @@ public class MainWindow extends javax.swing.JFrame {
                 properties.put(Customer.NAME_COLUMN, searchText);
                 break;
         }
-        int howMany = customerSearcher.searchCustomer(properties, false);
-        if (howMany == 0) {
+        lastSearchResult = customerSearcher.searchCustomer(properties, false);
+        if (lastSearchResult.size() == 0) {
             emptyCustomer();
+            hidePaginationElements();
         }
-        searchMessageLabel.setText(String.format(MESSAGE_CLIENT_FOUND, howMany));
+        showPaginationElements();
+        currentSearchResultIndex = 0;
     }//GEN-LAST:event_searchButtonActionPerformed
+
+    private void hidePaginationElements() {
+        previousButton.setVisible(false);
+        currentSearchViewingIndexLabel.setVisible(false);
+        nextButton.setVisible(false);
+    }
+
+    private void showPaginationElements() {
+        previousButton.setVisible(true);
+        currentSearchViewingIndexLabel.setVisible(true);
+        currentSearchViewingIndexLabel.setText("00/00");
+        nextButton.setVisible(true);
+        setCurrentIndexLabel();
+    }
+
 
     private void incomingCallListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_incomingCallListMouseClicked
         String selected = (String) incomingCallList.getSelectedValue();
+        if (selected == null) {
+            return;
+        }
         Customer customer = recentCallers.get(selected);
         if (customer != null) {
             populateCustomer(customer);
@@ -726,7 +787,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void autoRecordMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoRecordMenuItemActionPerformed
         try {
-            VoiceRecorder.toggleAutoRecording();
+            VoiceRecorderFactory.getInstance().toggleAutoRecording();
             updateUIRecordState();
         } catch (IOException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, "Cannot toggle auto record.", ex);
@@ -735,7 +796,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void recordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recordButtonActionPerformed
         try {
-            VoiceRecorder.stopRecording();
+            VoiceRecorderFactory.getInstance().stopRecording();
             stopRecordTimer();
         } catch (IOException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
@@ -751,7 +812,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
         try {
-            VoiceRecorder.stopRecording();
+            VoiceRecorderFactory.getInstance().stopRecording();
         } catch (IOException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -764,11 +825,34 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         try {
-            VoiceRecorder.stopRecording();
+            VoiceRecorderFactory.getInstance().stopRecording();
         } catch (IOException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_formWindowClosing
+
+    private void previousButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previousButtonActionPerformed
+        if (lastSearchResult != null) {
+            currentSearchResultIndex = (currentSearchResultIndex - 1) % lastSearchResult.size();
+            if (currentSearchResultIndex < 0) {
+                currentSearchResultIndex = lastSearchResult.size() - 1;
+            }
+            populateCustomer(lastSearchResult.get(currentSearchResultIndex));
+            setCurrentIndexLabel();
+        }
+    }//GEN-LAST:event_previousButtonActionPerformed
+
+    private void nextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextButtonActionPerformed
+        if (lastSearchResult != null) {
+            currentSearchResultIndex = (currentSearchResultIndex + 1) % lastSearchResult.size();
+            populateCustomer(lastSearchResult.get(currentSearchResultIndex));
+            setCurrentIndexLabel();
+        }
+    }//GEN-LAST:event_nextButtonActionPerformed
+
+    private void setCurrentIndexLabel() {
+        currentSearchViewingIndexLabel.setText(String.format("%02d", currentSearchResultIndex + 1) + "/" + String.format("%02d", lastSearchResult.size()));
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
@@ -786,6 +870,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel corporateNameLabelFixed;
     private javax.swing.JLabel cpfCnpjLabel;
     private javax.swing.JLabel cpfCnpjLabelFixed;
+    private javax.swing.JLabel currentSearchViewingIndexLabel;
     private javax.swing.JLabel districtLabel;
     private javax.swing.JLabel districtLabelFixed;
     private javax.swing.JLabel emailLabel;
@@ -809,11 +894,13 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel municipalityLabel;
     private javax.swing.JLabel municipalityLabelFixed;
     private javax.swing.JLabel nameLabel;
+    private javax.swing.JButton nextButton;
     private javax.swing.JLabel observationLabelFixed;
     private javax.swing.JScrollPane observationScrollPannel;
     private javax.swing.JTextPane observationTextPane;
     private javax.swing.JLabel postLabel;
     private javax.swing.JLabel postLabelFixed;
+    private javax.swing.JButton previousButton;
     private javax.swing.JLabel primaryBusinessPhoneLabel;
     private javax.swing.JLabel primaryBusinessPhoneLabelFixed;
     private javax.swing.JLabel problemsLabel;
@@ -910,7 +997,7 @@ public class MainWindow extends javax.swing.JFrame {
     public void updateUIRecordState() {
         boolean buttonEnabled = false;
         String label = "Parado";
-        if (VoiceRecorder.isRecording()) {
+        if (VoiceRecorderFactory.getInstance().isRecording()) {
             buttonEnabled = true;
             label = "Gravando";
             startRecordTimer();

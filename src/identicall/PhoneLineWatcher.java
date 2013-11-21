@@ -60,7 +60,7 @@ public class PhoneLineWatcher implements SerialPortEventListener {
                         if (input == END_NUMBER_MARK || incomingBufferPoiter >= PHONE_NUMBER_BUFFER_SIZE) {
                             if (phoneNumberReadyListener != null) {
                                 String phone = String.copyValueOf(incomingBuffer, 0, incomingBufferPoiter);
-                                if (!phone.startsWith(READY_INITIAL_MARK)) {
+                                if (!phone.startsWith(READY_INITIAL_MARK) && phone.length() >= 10) {
                                     phoneNumberReadyListener.processPhoneNumber(phone);
                                 }
                             }
@@ -91,6 +91,7 @@ public class PhoneLineWatcher implements SerialPortEventListener {
 
                     String[] numbers = new String[]{
                         "4791538642",
+                        "11981031001",
                         "4499770256",
                         "5199654276",
                         "5599791816",
@@ -105,7 +106,6 @@ public class PhoneLineWatcher implements SerialPortEventListener {
                         "5399763183",
                         "5199642230",
                         "1996356004",
-                        "1181031001",
                         "5199838478",
                         "5199687998",
                         "5391120364",
@@ -125,7 +125,7 @@ public class PhoneLineWatcher implements SerialPortEventListener {
                         String number = numbers[i++ % numbers.length];
                         System.out.println(number);
                         try {
-                            Thread.sleep(30000);
+                            Thread.sleep(5000);
                             phoneNumberReadyListener.processPhoneNumber(number);
                         } catch (InterruptedException ex) {
                             Logger.getLogger(PhoneLineWatcher.class.getName()).log(Level.SEVERE, null, ex);

@@ -1,83 +1,45 @@
 package identicall;
 
-import helper.AppProperties;
 import entity.Customer;
+import helper.AppProperties;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class VoiceRecorder {
+public abstract class VoiceRecorder {
 
-    final private static String RECORDER_COMMAND_PROPERTY = "recordercommand";
-    final private static String RECORDER_PROPERTY = "recorder";
-    final private static String CONVERT_COMMAND_PROPERTY = "convertcommand";
-    final private static String OUTPUT_PATH_PROPERTY = "voicedir";
     final private static String AUTO_RECORD_PROPERTY = "autorecord";
-    private static boolean enabled;
-    private static boolean recording = false;
-    private static Process recorderProcess;
-    private static int lastRecordPIDNumber = 0;
+    final private static String OUTPUT_PATH_PROPERTY = "voicedir";
+    private boolean enabled;
+    private boolean recording = false;
 
-    static {
+    VoiceRecorder() {
         try {
             enabled = AppProperties.getProperty(AUTO_RECORD_PROPERTY).endsWith("true");
         } catch (IOException ex) {
             enabled = false;
-            Logger.getLogger(VoiceRecorder.class.getName()).log(Level.SEVERE, "Cannot determine auto record property.", ex);
+            Logger.getLogger(VoiceRecorderArecordImp.class.getName()).log(Level.SEVERE, "Cannot determine auto record property.", ex);
         }
     }
 
-    private static void lauchRecordProcess(File outputFile) throws IOException {
-        stopRecordProcess();
-        String command = AppProperties.getProperty(RECORDER_COMMAND_PROPERTY);
-        command = String.format(command, outputFile.getAbsolutePath());
-        Runtime runtime = Runtime.getRuntime();
-        recorderProcess = runtime.exec(command);
-        try {
-            Field pidField = recorderProcess.getClass().getDeclaredField("pid");
-            pidField.setAccessible(true);
-            lastRecordPIDNumber = pidField.getInt(recorderProcess);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-            Logger.getLogger(VoiceRecorder.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private static void stopRecordProcess() throws IOException {
-        if (recorderProcess != null) {
-            recorderProcess.destroy();
-            if (lastRecordPIDNumber > 0) {
-                Runtime runtime = Runtime.getRuntime();
-                Object recorder = AppProperties.getProperty(RECORDER_PROPERTY);
-                Process recorders = runtime.exec("killall " + recorder);
-                try {
-                    recorders.waitFor();
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(VoiceRecorder.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            recorderProcess = null;
-        }
-    }
-
-    public static void disableAutoRecording() throws IOException {
+    public void disableAutoRecording() throws IOException {
         stopRecording();
         AppProperties.setProperty(AUTO_RECORD_PROPERTY, "false");
         AppProperties.storeProperties();
         enabled = false;
     }
 
-    public static void enableAutoRecording() throws IOException {
+    public void enableAutoRecording() throws IOException {
         AppProperties.setProperty(AUTO_RECORD_PROPERTY, "true");
         AppProperties.storeProperties();
         enabled = true;
     }
 
-    public static void toggleAutoRecording() throws IOException {
+    public void toggleAutoRecording() throws IOException {
         if (enabled) {
             disableAutoRecording();
         } else {
@@ -85,24 +47,24 @@ public class VoiceRecorder {
         }
     }
 
-    public static void startRecording(Customer customer, String phone) throws IOException {
+    public void startRecording(Customer customer, String phone) throws IOException {
         if (enabled) {
             if (recording) {
-                stopRecording();
+                stopRecordingImp();
             }
             recording = true;
-            lauchRecordProcess(getOutputFile(customer, phone));
+            startRecordingImp(getOutputFile(customer, phone));
         }
     }
 
-    public static void stopRecording() throws IOException {
+    public void stopRecording() throws IOException {
         if (enabled && recording) {
             recording = false;
-            stopRecordProcess();
+            stopRecordingImp();
         }
     }
 
-    private static File getOutputFile(Customer customer, String phone) throws IOException {
+    private File getOutputFile(Customer customer, String phone) throws IOException {
         String outputPath = AppProperties.getProperty(OUTPUT_PATH_PROPERTY);
         Calendar calendar = new GregorianCalendar();
         File baseDirectory = new File(outputPath);
@@ -121,11 +83,15 @@ public class VoiceRecorder {
         return targetFile;
     }
 
-    public static boolean isEnabled() {
+    public boolean isEnabled() {
         return enabled;
     }
 
-    public static boolean isRecording() {
+    public boolean isRecording() {
         return recording;
     }
+
+    protected abstract void startRecordingImp(File outputFile) throws IOException;
+
+    protected abstract void stopRecordingImp() throws IOException;
 }

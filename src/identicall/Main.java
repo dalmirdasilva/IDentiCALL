@@ -16,9 +16,10 @@ import entity.Customer;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;
+import helper.PhoneNormilizer;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -99,23 +100,24 @@ public class Main implements PhoneNumberReadyListener, CustomerSearcher {
     }
 
     @Override
-    public void processPhoneNumber(String number) {
+    public void processPhoneNumber(String phone) {
+        phone = PhoneNormilizer.normilize(phone);
         Map<String, String> properties = new HashMap<>();
-        properties.put(Customer.CELL_PHONE_COLUMN, number);
-        properties.put(Customer.PRIMARY_BUSINESS_PHONE_COLUMN, number);
-        properties.put(Customer.RESIDENTIAL_PHONE_COLUMN, number);
+        properties.put(Customer.CELL_PHONE_COLUMN, phone);
+        properties.put(Customer.PRIMARY_BUSINESS_PHONE_COLUMN, phone);
+        properties.put(Customer.RESIDENTIAL_PHONE_COLUMN, phone);
         searchAndPopulateByProperties(properties, true);
     }
 
-    private int searchAndPopulateByProperties(Map<String, String> properties, boolean fromLine) {
-        List<Customer> customers;
+    private List<Customer> searchAndPopulateByProperties(Map<String, String> properties, boolean fromLine) {
+        List<Customer> customers = new ArrayList<>();
         if (window == null) {
-            return 0;
+            return customers;
         }
         try {
             customers = customerDAO.findByAttributes(properties);
         } catch (ObjectNotFoundException ex) {
-            return 0;
+            return customers;
         }
         String recentCallText = null;
         String phone = "";
@@ -127,13 +129,13 @@ public class Main implements PhoneNumberReadyListener, CustomerSearcher {
         Customer customer = size > 0 ? customers.get(0) : null;
         if (fromLine) {
             try {
-                VoiceRecorder.startRecording(customer, phone);
+                VoiceRecorderFactory.getInstance().startRecording(customer, phone);
             } catch (IOException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         window.addRecentCaller(customer, recentCallText);
-        return size;
+        return customers;
     }
 
     private String getRecentCallText(String phone) {
@@ -142,7 +144,7 @@ public class Main implements PhoneNumberReadyListener, CustomerSearcher {
     }
 
     @Override
-    public int searchCustomer(Map<String, String> propertiesMap, boolean apeendRecentCall) {
+    public List<Customer> searchCustomer(Map<String, String> propertiesMap, boolean apeendRecentCall) {
         return searchAndPopulateByProperties(propertiesMap, apeendRecentCall);
     }
 }
