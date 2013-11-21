@@ -1,14 +1,16 @@
-#define BLINK_LED           A2
-#define SIGNAL_LED          A3
+#define BLINK_LED               A2
+#define SIGNAL_LED              A3
 
-#define BIT_0               3
-#define BIT_1               4
-#define BIT_2               5
-#define BIT_3               6
+#define BIT_0                   3
+#define BIT_1                   4
+#define BIT_2                   5
+#define BIT_3                   6
 
-#define MAX_NUMBER_LENGHT   15
-#define LAST_DIGIT_MARK     ('0' + 15)
-#define FIST_DISCARD_DIGITS 2
+#define MAX_NUMBER_LENGHT       15
+#define LAST_DIGIT_MARK         ('0' + 15)
+#define FIST_DISCARD_DIGITS     2
+#define IS_NUMERICAL_DIGIT(d)   (((d) >= 0) && (d <= 9))
+
 
 unsigned char phoneNumberBufferPointer = 0;
 unsigned char phoneNumberBuffer[20];
@@ -33,7 +35,7 @@ unsigned char digitMap[16] = {
   61, // 13 -> '='
   62, // 14 -> '>'
   63, // 15 -> '?'
-}
+};
 
 void setup() {
   Serial.begin(9600);
