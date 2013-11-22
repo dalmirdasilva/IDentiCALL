@@ -36,7 +36,7 @@ public class MainWindow extends javax.swing.JFrame {
     static {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("GTK+".equals(info.getName())) {
+                if (info.getName().startsWith("Windows")) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -373,12 +373,12 @@ public class MainWindow extends javax.swing.JFrame {
                 .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(searchMessageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 207, Short.MAX_VALUE)
-                .addComponent(previousButton, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 215, Short.MAX_VALUE)
+                .addComponent(previousButton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(currentSearchViewingIndexLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(nextButton, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(nextButton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         searchPanelLayout.setVerticalGroup(
@@ -749,12 +749,13 @@ public class MainWindow extends javax.swing.JFrame {
                 break;
         }
         lastSearchResult = customerSearcher.searchCustomer(properties, false);
+        hidePaginationElements();
+        currentSearchResultIndex = 0;
         if (lastSearchResult.size() == 0) {
             emptyCustomer();
-            hidePaginationElements();
+        } else if (lastSearchResult.size() > 1) {
+            showPaginationElements();
         }
-        showPaginationElements();
-        currentSearchResultIndex = 0;
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void hidePaginationElements() {
@@ -774,6 +775,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void incomingCallListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_incomingCallListMouseClicked
         String selected = (String) incomingCallList.getSelectedValue();
+        System.out.println("-----------------------");
         if (selected == null) {
             return;
         }
