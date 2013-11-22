@@ -3,27 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/dalmir/NetBeansProjects/IDentiCALL/src/identicall/Main.java</file>
-            <file>file:/home/dalmir/NetBeansProjects/IDentiCALL/src/view/MainWindow.java</file>
-            <file>file:/home/dalmir/NetBeansProjects/IDentiCALL/src/identicall/VoiceRecorder.java</file>
-            <file>file:/home/dalmir/NetBeansProjects/IDentiCALL/src/hibernate.ibase.cfg.xml</file>
-            <file>file:/home/dalmir/NetBeansProjects/IDentiCALL/src/dao/hibernate/IncomingCallHibernateDAO.java</file>
-            <file>file:/home/dalmir/NetBeansProjects/IDentiCALL/src/identicall/VoiceRecorderArecordImp.java</file>
-            <file>file:/home/dalmir/NetBeansProjects/IDentiCALL/src/identicall/VoiceRecorderFactory.java</file>
-            <file>file:/home/dalmir/NetBeansProjects/IDentiCALL/src/dao/GenericDAO.java</file>
-            <file>file:/home/dalmir/NetBeansProjects/IDentiCALL/src/dao/hibernate/CustomerHibernateDAO.java</file>
-            <file>file:/home/dalmir/NetBeansProjects/IDentiCALL/src/identicall/AudioRecorder.java</file>
-            <file>file:/home/dalmir/NetBeansProjects/IDentiCALL/src/identicall/VoiceRecorderAudioImp.java</file>
-            <file>file:/home/dalmir/NetBeansProjects/IDentiCALL/src/entity/Customer.java</file>
-            <file>file:/home/dalmir/NetBeansProjects/IDentiCALL/src/identicall/AudioRecorderException.java</file>
-            <file>file:/home/dalmir/NetBeansProjects/IDentiCALL/src/dao/hibernate/HibernateDAOFactory.java</file>
-            <file>file:/home/dalmir/NetBeansProjects/IDentiCALL/src/dao/hibernate/GenericHibernateDAO.java</file>
-            <file>file:/home/dalmir/NetBeansProjects/IDentiCALL/src/identicall/PhoneLineWatcher.java</file>
-            <file>file:/home/dalmir/NetBeansProjects/IDentiCALL/src/serialclient/SerialClient.java</file>
-            <file>file:/home/dalmir/NetBeansProjects/IDentiCALL/src/helper/AppProperties.java</file>
-            <file>file:/home/dalmir/NetBeansProjects/IDentiCALL/src/config.properties</file>
-            <file>file:/home/dalmir/NetBeansProjects/IDentiCALL/src/identicall/CustomerSearcher.java</file>
-            <file>file:/home/dalmir/NetBeansProjects/IDentiCALL/src/identicall/PhoneNumberReadyListener.java</file>
+            <file>file:/C:/Users/Dalmir/Documents/GitHub/IDentiCALL/src/view/MainWindow.java</file>
+            <file>file:/C:/Users/Dalmir/Documents/GitHub/IDentiCALL/src/identicall/Main.java</file>
         </group>
     </open-files>
 </project-private>
