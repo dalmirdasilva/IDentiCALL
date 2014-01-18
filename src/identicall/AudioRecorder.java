@@ -7,6 +7,8 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineEvent;
+import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
 
@@ -38,6 +40,13 @@ public class AudioRecorder {
             }
             line = (TargetDataLine) AudioSystem.getLine(info);
             line.open(format);
+            line.addLineListener(new LineListener() {
+
+                @Override
+                public void update(LineEvent event) {
+                    
+                }
+            });
             line.start();
             AudioInputStream ais = new AudioInputStream(line);
             AudioSystem.write(ais, fileType, outputFile);
