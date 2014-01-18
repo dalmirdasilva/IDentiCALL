@@ -56,7 +56,7 @@ public class PhoneLineWatcher implements SerialPortEventListener {
             case SerialPortEvent.DATA_AVAILABLE:
                 try {
                     int input = 0;
-                    while ((input = serialClient.getInputStream().read()) != 1) {
+                    while ((input = serialClient.getInputStream().read()) != -1) {
                         if (input == END_NUMBER_MARK || incomingBufferPoiter >= PHONE_NUMBER_BUFFER_SIZE) {
                             if (phoneNumberReadyListener != null) {
                                 String phone = String.copyValueOf(incomingBuffer, 0, incomingBufferPoiter);
@@ -80,7 +80,15 @@ public class PhoneLineWatcher implements SerialPortEventListener {
             NoSuchPortException, PortInUseException, UnsupportedCommOperationException, TooManyListenersException, IOException, SerialClientException {
 
         if (AppProperties.getProperty(FAKE_SERIAL_PROPERTY).equals("false")) {
-            serialClient.connect(AppProperties.getProperty(SERIAL_PORT_PATH_PROPERTY));
+            String portName = "";
+            Enumeration portList = CommPortIdentifier.getPortIdentifiers();
+            if (portList.hasMoreElements()) {
+                CommPortIdentifier portId = (CommPortIdentifier) portList.nextElement();
+                if (portId.getPortType() != CommPortIdentifier.PORT_PARALLEL) {
+                    portName = portId.getName();
+                }
+            }
+            serialClient.connect(portName);
             serialClient.addSerialPortEventListener(this);
         } else {
 
@@ -125,7 +133,7 @@ public class PhoneLineWatcher implements SerialPortEventListener {
                         String number = numbers[i++ % numbers.length];
                         System.out.println(number);
                         try {
-                            Thread.sleep(5000);
+                            Thread.sleep(10000);
                             phoneNumberReadyListener.processPhoneNumber(number);
                         } catch (InterruptedException ex) {
                             Logger.getLogger(PhoneLineWatcher.class.getName()).log(Level.SEVERE, null, ex);

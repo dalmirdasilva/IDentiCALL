@@ -6,6 +6,7 @@ import helper.AppProperties;
 import helper.Formater;
 import identicall.CustomerSearcher;
 import identicall.VoiceRecorderFactory;
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.HashMap;
@@ -34,8 +35,11 @@ public class MainWindow extends javax.swing.JFrame {
     private int currentSearchResultIndex;
 
     static {
+		//String OS = System.getProperty("os.name").toLowerCase();
+		
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if (info.getName().startsWith("Windows")) {
                 if ("GTK+".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
@@ -149,6 +153,7 @@ public class MainWindow extends javax.swing.JFrame {
                 formWindowClosing(evt);
             }
         });
+        getContentPane().setLayout(new java.awt.BorderLayout());
 
         headerPanel.setBackground(new java.awt.Color(201, 208, 209));
         headerPanel.setLayout(new java.awt.BorderLayout());
@@ -370,15 +375,15 @@ public class MainWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(searchComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(searchMessageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 207, Short.MAX_VALUE)
-                .addComponent(previousButton, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 179, Short.MAX_VALUE)
+                .addComponent(previousButton, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(currentSearchViewingIndexLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(nextButton, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(nextButton, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         searchPanelLayout.setVerticalGroup(
@@ -602,14 +607,14 @@ public class MainWindow extends javax.swing.JFrame {
                                         .addComponent(postLabelFixed)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(postLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 115, Short.MAX_VALUE))))
+                                .addGap(0, 112, Short.MAX_VALUE))))
                     .addGroup(formPanelLayout.createSequentialGroup()
                         .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(observationLabelFixed)
                             .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(cpfCnpjLabelFixed, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(cpfCnpjLabelFixed, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cpfCnpjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(cpfCnpjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -675,7 +680,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(observationLabelFixed)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(observationScrollPannel, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+                .addComponent(observationScrollPannel, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -749,12 +754,13 @@ public class MainWindow extends javax.swing.JFrame {
                 break;
         }
         lastSearchResult = customerSearcher.searchCustomer(properties, false);
+        hidePaginationElements();
+        currentSearchResultIndex = 0;
         if (lastSearchResult.size() == 0) {
             emptyCustomer();
-            hidePaginationElements();
+        } else if (lastSearchResult.size() > 1) {
+            showPaginationElements();
         }
-        showPaginationElements();
-        currentSearchResultIndex = 0;
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void hidePaginationElements() {
@@ -933,6 +939,11 @@ public class MainWindow extends javax.swing.JFrame {
     public void populateCustomer(Customer customer) {
         City city = customer.getCity();
         nameLabel.setText(customer.getName());
+        if (customer.getProblems() == 'S') {
+            nameLabel.setForeground(Color.RED);
+        } else {
+            nameLabel.setForeground(Color.BLACK);
+        }
         cpfCnpjLabel.setText(Formater.formatCpfCnpj(customer.getCpfCnpj()));
         residentialPhoneLabel.setText(Formater.formatPhone(customer.getResidentialPhone()));
         faxLabel.setText(Formater.formatPhone(customer.getFax()));
@@ -952,6 +963,9 @@ public class MainWindow extends javax.swing.JFrame {
         recordDateLabel.setText(Formater.formatStringDate(customer.getRecortDate()));
         postLabel.setText(String.valueOf(customer.getPost()));
         problemsLabel.setText(String.valueOf(customer.getProblems()));
+        if (customer.getObservation() != null && customer.getObservation().contains("is not supported")) {
+            customer.setObservation("-");
+        }
         observationTextPane.setText(customer.getObservation());
     }
 

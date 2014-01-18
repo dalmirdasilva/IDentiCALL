@@ -11,7 +11,7 @@ public class PhoneNormilizer {
     
     public static String normilize(String phone) {
         for (String code : areaCodeWithExtraNumber) {
-            if (phone.startsWith(code)) {
+            if (phone.startsWith(code) && phone.length() > MAX_PHONE_SIZE) {
                 phone = removeExtraCodeFromPhone(phone);
                 break;
             }
@@ -19,6 +19,8 @@ public class PhoneNormilizer {
         if (phone.length() >= MAX_PHONE_SIZE) {
             phone = phone.substring(0, MAX_PHONE_SIZE);
         }
+		// TODO:should be removed
+        phone = phone.replace('?', '%');
         return phone;
     }
 
