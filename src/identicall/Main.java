@@ -41,6 +41,7 @@ import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.classic.Session;
 import serialclient.SerialClientException;
 import server.AppServer;
+import view.Normalizing;
 
 public class Main extends IncomingCallNotifier implements PhoneNumberReadyListener, CustomerSearcher {
 
@@ -81,17 +82,25 @@ public class Main extends IncomingCallNotifier implements PhoneNumberReadyListen
         customerDAO = (CustomerDAO) daoFactory.getNewDAO(CustomerHibernateDAO.class);
         cityDAO = (CityDAO) daoFactory.getNewDAO(CityHibernateDAO.class);
 
-        new Thread() {
-
-            @Override
-            public void run() {
-                try {
-                    Normalizer.normalize(customerDAO, cityDAO);
-                } catch (Exception ex) {
-                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        try {
+            final Normalizing normalizing = new Normalizing();
+            normalizing.setVisible(true);
+            Normalizer.normalize(customerDAO, cityDAO);
+            new Thread() {
+                
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    normalizing.setVisible(false);
                 }
-            }
-        }.start();
+            }.start();
+        } catch (Exception ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         final Main instance = this;
         PhoneLineWatcher incomingCallListener = new PhoneLineWatcher(instance);
@@ -116,7 +125,7 @@ public class Main extends IncomingCallNotifier implements PhoneNumberReadyListen
         List<Customer> customers = searchAndPopulateByProperties(properties, true);
         final IncomingCallDescriptor descriptor = new IncomingCallDescriptor(phone, customers);
         new Thread() {
-            
+
             @Override
             public void run() {
                 notifyIncomingCallListeners(descriptor);

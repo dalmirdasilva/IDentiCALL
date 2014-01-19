@@ -40,6 +40,6 @@ public class ReportGenerator implements IncomingCallListener {
         Customer customer = (customers != null && customers.size() > 0) ? customers.get(0) : null;
         String customerName = (customer != null) ? customer.getName() : "<Cliente não encontrado>";
         String recentCallString = Formater.formatRecentCall(descriptor.getPhone(), now);
-        return customerName + " - " + recentCallString;
+        return customerName + ", " + recentCallString.replace('@', ',');
     }
 }

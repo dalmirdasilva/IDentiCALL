@@ -551,7 +551,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         incomingCallDetailsFixed.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         incomingCallDetailsFixed.setForeground(new java.awt.Color(135, 128, 128));
-        incomingCallDetailsFixed.setText("Última ligação:");
+        incomingCallDetailsFixed.setText("Detalhes da ligação:");
 
         incomingCallDetails.setEditable(false);
         incomingCallDetails.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
@@ -796,7 +796,7 @@ public class MainWindow extends javax.swing.JFrame {
         lastSearchResult = customerSearcher.searchCustomer(properties, false);
         hidePaginationElements();
         currentSearchResultIndex = 0;
-        if (lastSearchResult.size() == 0) {
+        if (lastSearchResult.isEmpty()) {
             emptyCustomer();
         } else if (lastSearchResult.size() > 1) {
             showPaginationElements();
@@ -823,6 +823,7 @@ public class MainWindow extends javax.swing.JFrame {
         if (selected == null) {
             return;
         }
+        incomingCallDetails.setText(selected);
         Customer customer = recentCallers.get(selected);
         if (customer != null) {
             populateCustomer(customer);
@@ -1107,20 +1108,26 @@ public class MainWindow extends javax.swing.JFrame {
         recortTimerThread.start();
     }
 
-    public void appendCallerList(String text) {
+    public void appendCallerList(final String text) {
 
-        DefaultListModel listModel = new DefaultListModel();
-        listModel.addElement(text);
-        int max = Math.min(MAX_RECENT_CALLS_TO_SHOW, incomingCallList.getModel().getSize());
-        for (int i = 0; i < max; i++) {
-            listModel.addElement(incomingCallList.getModel().getElementAt(i));
-        }
-        incomingCallList.setModel(listModel);
-        incomingCallList.setSelectedIndex(0);
-        if (recentCallers.size() > MAX_RECENT_CALLS_TO_SHOW) {
-            // recentCallers.pollLastEntry();
-        }
-        System.out.println("recentCallers.size :" + recentCallers.size());
+        new Thread() {
+
+            @Override
+            public void run() {
+                DefaultListModel listModel = new DefaultListModel();
+                listModel.addElement(text);
+                int max = Math.min(MAX_RECENT_CALLS_TO_SHOW, incomingCallList.getModel().getSize());
+                for (int i = 0; i < max; i++) {
+                    listModel.addElement(incomingCallList.getModel().getElementAt(i));
+                }
+                incomingCallList.setModel(listModel);
+                incomingCallList.setSelectedIndex(0);
+                if (recentCallers.size() > MAX_RECENT_CALLS_TO_SHOW) {
+                    // Causing list to mal funcoin... click and there is no customer.
+                    // recentCallers.pollLastEntry();
+                }
+            }
+        }.start();
     }
 
     private void setIconAndTitle() {

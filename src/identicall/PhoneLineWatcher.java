@@ -111,7 +111,7 @@ public class PhoneLineWatcher implements SerialPortEventListener {
 
                 @Override
                 public void run() {
-
+                    
                     String[] numbers = new String[]{
                         "5599721816",
                         "11981031001",
@@ -149,7 +149,7 @@ public class PhoneLineWatcher implements SerialPortEventListener {
                         String number = numbers[i++ % numbers.length];
                         System.out.println(number);
                         try {
-                            Thread.sleep(10000);
+                            Thread.sleep(5000);
                             phoneNumberReadyListener.processPhoneNumber(number);
                         } catch (InterruptedException ex) {
                             Logger.getLogger(PhoneLineWatcher.class.getName()).log(Level.SEVERE, null, ex);
