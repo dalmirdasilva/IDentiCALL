@@ -5,7 +5,7 @@ import entity.Customer;
 import helper.AppProperties;
 import helper.Formater;
 import identicall.CustomerSearcher;
-import identicall.VoiceRecorderFactory;
+import audiorecord.VoiceRecorderFactory;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -35,12 +35,17 @@ public class MainWindow extends javax.swing.JFrame {
     private int currentSearchResultIndex;
 
     static {
-		//String OS = System.getProperty("os.name").toLowerCase();
-		
+        String OS = System.getProperty("os.name").toLowerCase();
+        String preferredLookAndFeel = "";
+        if (OS.indexOf("win") >= 0) {
+            preferredLookAndFeel = "Windows";
+        } else {
+            preferredLookAndFeel = "GTK+";
+        }
+
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if (info.getName().startsWith("Windows")) {
-                if ("GTK+".equals(info.getName())) {
+                if (info.getName().startsWith(preferredLookAndFeel)) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -99,46 +104,48 @@ public class MainWindow extends javax.swing.JFrame {
         nextButton = new javax.swing.JButton();
         currentSearchViewingIndexLabel = new javax.swing.JLabel();
         formPanel = new javax.swing.JPanel();
-        nameLabel = new javax.swing.JLabel();
+        nameLabel = new javax.swing.JTextField();
         cpfCnpjLabelFixed = new javax.swing.JLabel();
-        cpfCnpjLabel = new javax.swing.JLabel();
+        cpfCnpjLabel = new javax.swing.JTextField();
         residentialPhoneLavelFixed = new javax.swing.JLabel();
-        residentialPhoneLabel = new javax.swing.JLabel();
+        residentialPhoneLabel = new javax.swing.JTextField();
         faxLabelFixed = new javax.swing.JLabel();
-        faxLabel = new javax.swing.JLabel();
+        faxLabel = new javax.swing.JTextField();
         cellPhoneLabelFixed = new javax.swing.JLabel();
-        cellPhoneLabel = new javax.swing.JLabel();
+        cellPhoneLabel = new javax.swing.JTextField();
         emailLabelFixed = new javax.swing.JLabel();
-        emailLabel = new javax.swing.JLabel();
+        emailLabel = new javax.swing.JTextField();
         corporateNameLabelFixed = new javax.swing.JLabel();
-        corporateNameLabel = new javax.swing.JLabel();
+        corporateNameLabel = new javax.swing.JTextField();
         cityLabelFixed = new javax.swing.JLabel();
-        cityLabel = new javax.swing.JLabel();
+        cityLabel = new javax.swing.JTextField();
         districtLabelFixed = new javax.swing.JLabel();
-        districtLabel = new javax.swing.JLabel();
+        districtLabel = new javax.swing.JTextField();
         addressLabelFixed = new javax.swing.JLabel();
-        addressLabel = new javax.swing.JLabel();
+        addressLabel = new javax.swing.JTextField();
         primaryBusinessPhoneLabelFixed = new javax.swing.JLabel();
-        primaryBusinessPhoneLabel = new javax.swing.JLabel();
+        primaryBusinessPhoneLabel = new javax.swing.JTextField();
         birthDateLabelFixed = new javax.swing.JLabel();
-        birthDateLabel = new javax.swing.JLabel();
+        birthDateLabel = new javax.swing.JTextField();
         legalPersonLavelFixed = new javax.swing.JLabel();
-        legalPersonLabel = new javax.swing.JLabel();
+        legalPersonLabel = new javax.swing.JTextField();
         recordLabelFixed = new javax.swing.JLabel();
-        recordDateLabel = new javax.swing.JLabel();
+        recordDateLabel = new javax.swing.JTextField();
         postLabelFixed = new javax.swing.JLabel();
-        postLabel = new javax.swing.JLabel();
+        postLabel = new javax.swing.JTextField();
         problemsLabelFixed = new javax.swing.JLabel();
-        problemsLabel = new javax.swing.JLabel();
+        problemsLabel = new javax.swing.JTextField();
         observationLabelFixed = new javax.swing.JLabel();
         observationScrollPannel = new javax.swing.JScrollPane();
         observationTextPane = new javax.swing.JTextPane();
         stateAbbreviationLabelFixed = new javax.swing.JLabel();
-        stateAbbreviationLabel = new javax.swing.JLabel();
+        stateAbbreviationLabel = new javax.swing.JTextField();
         municipalityLabelFixed = new javax.swing.JLabel();
-        municipalityLabel = new javax.swing.JLabel();
+        municipalityLabel = new javax.swing.JTextField();
         secondaryBusinessPhoneLabelFixed = new javax.swing.JLabel();
-        secondaryBusinessPhoneLabel = new javax.swing.JLabel();
+        secondaryBusinessPhoneLabel = new javax.swing.JTextField();
+        incomingCallDetailsFixed = new javax.swing.JLabel();
+        incomingCallDetails = new javax.swing.JTextField();
         menuBar = new javax.swing.JMenuBar();
         fileMenuItem = new javax.swing.JMenu();
         autoRecordMenuItem = new javax.swing.JMenuItem();
@@ -153,7 +160,6 @@ public class MainWindow extends javax.swing.JFrame {
                 formWindowClosing(evt);
             }
         });
-        getContentPane().setLayout(new java.awt.BorderLayout());
 
         headerPanel.setBackground(new java.awt.Color(201, 208, 209));
         headerPanel.setLayout(new java.awt.BorderLayout());
@@ -223,7 +229,7 @@ public class MainWindow extends javax.swing.JFrame {
         leftPanelLayout.setHorizontalGroup(
             leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(leftPanelLayout.createSequentialGroup()
-                .addContainerGap(171, Short.MAX_VALUE)
+                .addContainerGap(137, Short.MAX_VALUE)
                 .addComponent(recordFixedLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(recordStatusLabel)
@@ -300,7 +306,7 @@ public class MainWindow extends javax.swing.JFrame {
         );
         incomingCallMainPanelLayout.setVerticalGroup(
             incomingCallMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(incomingCallScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 521, Short.MAX_VALUE)
+            .addComponent(incomingCallScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 528, Short.MAX_VALUE)
         );
 
         rightSidePanel.add(incomingCallMainPanel, java.awt.BorderLayout.CENTER);
@@ -316,6 +322,7 @@ public class MainWindow extends javax.swing.JFrame {
         searchPanel.setPreferredSize(new java.awt.Dimension(638, 35));
 
         searchLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
+        searchLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         searchLabel.setText("Pesquisar:");
 
         searchMessageLabel.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
@@ -369,8 +376,8 @@ public class MainWindow extends javax.swing.JFrame {
             searchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(searchPanelLayout.createSequentialGroup()
                 .addGap(6, 6, 6)
-                .addComponent(searchLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(6, 6, 6)
+                .addComponent(searchLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(searchComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -378,7 +385,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(searchMessageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 179, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 90, Short.MAX_VALUE)
                 .addComponent(previousButton, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(currentSearchViewingIndexLabel)
@@ -403,96 +410,112 @@ public class MainWindow extends javax.swing.JFrame {
 
         formPanel.setBackground(new java.awt.Color(254, 254, 254));
 
+        nameLabel.setEditable(false);
         nameLabel.setFont(new java.awt.Font("Ubuntu", 0, 36)); // NOI18N
         nameLabel.setText("<Cliente não econtrado>");
 
         cpfCnpjLabelFixed.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
         cpfCnpjLabelFixed.setText("CPF/CNPJ:");
 
+        cpfCnpjLabel.setEditable(false);
         cpfCnpjLabel.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
         cpfCnpjLabel.setText("--------- --");
 
         residentialPhoneLavelFixed.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
         residentialPhoneLavelFixed.setText("Fone Residencial:");
 
+        residentialPhoneLabel.setEditable(false);
         residentialPhoneLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         residentialPhoneLabel.setText("(--) --------");
 
         faxLabelFixed.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
         faxLabelFixed.setText("Fax:");
 
+        faxLabel.setEditable(false);
         faxLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         faxLabel.setText("(--) --------");
 
         cellPhoneLabelFixed.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
         cellPhoneLabelFixed.setText("Celular:");
 
+        cellPhoneLabel.setEditable(false);
         cellPhoneLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         cellPhoneLabel.setText("(--) --------");
 
         emailLabelFixed.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
         emailLabelFixed.setText("Email:");
 
+        emailLabel.setEditable(false);
         emailLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         emailLabel.setText("---");
 
         corporateNameLabelFixed.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
         corporateNameLabelFixed.setText("Razão Social:");
 
+        corporateNameLabel.setEditable(false);
         corporateNameLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         corporateNameLabel.setText("---");
 
         cityLabelFixed.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
         cityLabelFixed.setText("Cidade:");
 
+        cityLabel.setEditable(false);
         cityLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         cityLabel.setText("---");
 
         districtLabelFixed.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
         districtLabelFixed.setText("Bairro:");
 
+        districtLabel.setEditable(false);
         districtLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         districtLabel.setText("---");
 
         addressLabelFixed.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
         addressLabelFixed.setText("Endereço:");
 
+        addressLabel.setEditable(false);
         addressLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         addressLabel.setText("---");
 
         primaryBusinessPhoneLabelFixed.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
         primaryBusinessPhoneLabelFixed.setText("Fone Comecial 1:");
 
+        primaryBusinessPhoneLabel.setEditable(false);
         primaryBusinessPhoneLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         primaryBusinessPhoneLabel.setText("(--) --------");
 
         birthDateLabelFixed.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
         birthDateLabelFixed.setText("Nascimento:");
 
+        birthDateLabel.setEditable(false);
         birthDateLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         birthDateLabel.setText("--/--/----");
 
         legalPersonLavelFixed.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
         legalPersonLavelFixed.setText("Pessoa:");
 
+        legalPersonLabel.setEditable(false);
         legalPersonLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         legalPersonLabel.setText("---");
 
         recordLabelFixed.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
         recordLabelFixed.setText("Data Cadastro:");
 
+        recordDateLabel.setEditable(false);
         recordDateLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         recordDateLabel.setText("--/--/----");
 
         postLabelFixed.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
         postLabelFixed.setText("Correio:");
 
+        postLabel.setEditable(false);
         postLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         postLabel.setText("---");
 
         problemsLabelFixed.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
         problemsLabelFixed.setText("Problemas:");
 
+        problemsLabel.setEditable(false);
         problemsLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         problemsLabel.setText("---");
 
@@ -508,20 +531,35 @@ public class MainWindow extends javax.swing.JFrame {
         stateAbbreviationLabelFixed.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
         stateAbbreviationLabelFixed.setText("Estado:");
 
+        stateAbbreviationLabel.setEditable(false);
         stateAbbreviationLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         stateAbbreviationLabel.setText("--");
 
         municipalityLabelFixed.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
         municipalityLabelFixed.setText("Município:");
 
+        municipalityLabel.setEditable(false);
         municipalityLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         municipalityLabel.setText("---");
 
         secondaryBusinessPhoneLabelFixed.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
         secondaryBusinessPhoneLabelFixed.setText("Fone Comecial 2:");
 
+        secondaryBusinessPhoneLabel.setEditable(false);
         secondaryBusinessPhoneLabel.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         secondaryBusinessPhoneLabel.setText("(--) --------");
+
+        incomingCallDetailsFixed.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
+        incomingCallDetailsFixed.setForeground(new java.awt.Color(135, 128, 128));
+        incomingCallDetailsFixed.setText("Última ligação:");
+
+        incomingCallDetails.setEditable(false);
+        incomingCallDetails.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
+        incomingCallDetails.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                incomingCallDetailsActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout formPanelLayout = new javax.swing.GroupLayout(formPanel);
         formPanel.setLayout(formPanelLayout);
@@ -530,92 +568,91 @@ public class MainWindow extends javax.swing.JFrame {
             .addGroup(formPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(nameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(observationScrollPannel)
-                    .addGroup(formPanelLayout.createSequentialGroup()
-                        .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addGroup(formPanelLayout.createSequentialGroup()
+                    .addComponent(nameLabel)
+                    .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(observationLabelFixed)
+                        .addGroup(formPanelLayout.createSequentialGroup()
+                            .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, formPanelLayout.createSequentialGroup()
+                                    .addComponent(cpfCnpjLabelFixed, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(cpfCnpjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, formPanelLayout.createSequentialGroup()
                                     .addComponent(birthDateLabelFixed)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(birthDateLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGroup(formPanelLayout.createSequentialGroup()
+                                    .addComponent(birthDateLabel))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, formPanelLayout.createSequentialGroup()
                                     .addComponent(legalPersonLavelFixed)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(legalPersonLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGroup(formPanelLayout.createSequentialGroup()
+                                    .addComponent(legalPersonLabel))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, formPanelLayout.createSequentialGroup()
                                     .addComponent(cellPhoneLabelFixed)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(cellPhoneLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGroup(formPanelLayout.createSequentialGroup()
+                                    .addComponent(cellPhoneLabel))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, formPanelLayout.createSequentialGroup()
                                     .addComponent(residentialPhoneLavelFixed)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(residentialPhoneLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGroup(formPanelLayout.createSequentialGroup()
+                                    .addComponent(residentialPhoneLabel))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, formPanelLayout.createSequentialGroup()
                                     .addComponent(primaryBusinessPhoneLabelFixed)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(primaryBusinessPhoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(stateAbbreviationLabelFixed)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(stateAbbreviationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(districtLabelFixed)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(districtLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(secondaryBusinessPhoneLabelFixed)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(secondaryBusinessPhoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(22, 22, 22)
-                        .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(addressLabelFixed)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(addressLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(emailLabelFixed)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(emailLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(cityLabelFixed)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cityLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(municipalityLabelFixed)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(municipalityLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(corporateNameLabelFixed)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(corporateNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(recordLabelFixed)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(recordDateLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(formPanelLayout.createSequentialGroup()
-                                        .addComponent(faxLabelFixed)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(faxLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(formPanelLayout.createSequentialGroup()
-                                        .addComponent(problemsLabelFixed)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(problemsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(postLabelFixed)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(postLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 112, Short.MAX_VALUE))))
-                    .addGroup(formPanelLayout.createSequentialGroup()
-                        .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(observationLabelFixed)
-                            .addGroup(formPanelLayout.createSequentialGroup()
-                                .addComponent(cpfCnpjLabelFixed, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cpfCnpjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                                    .addComponent(primaryBusinessPhoneLabel))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, formPanelLayout.createSequentialGroup()
+                                    .addComponent(stateAbbreviationLabelFixed)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(stateAbbreviationLabel))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, formPanelLayout.createSequentialGroup()
+                                    .addComponent(districtLabelFixed)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(districtLabel))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, formPanelLayout.createSequentialGroup()
+                                    .addComponent(secondaryBusinessPhoneLabelFixed)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(secondaryBusinessPhoneLabel)))
+                            .addGap(22, 22, 22)
+                            .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, formPanelLayout.createSequentialGroup()
+                                    .addComponent(faxLabelFixed)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(faxLabel))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, formPanelLayout.createSequentialGroup()
+                                    .addComponent(incomingCallDetailsFixed)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(incomingCallDetails))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, formPanelLayout.createSequentialGroup()
+                                    .addComponent(corporateNameLabelFixed)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(corporateNameLabel))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, formPanelLayout.createSequentialGroup()
+                                    .addComponent(municipalityLabelFixed)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(municipalityLabel))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, formPanelLayout.createSequentialGroup()
+                                    .addComponent(cityLabelFixed)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(cityLabel))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, formPanelLayout.createSequentialGroup()
+                                    .addComponent(addressLabelFixed)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(addressLabel))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, formPanelLayout.createSequentialGroup()
+                                    .addComponent(emailLabelFixed)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(emailLabel))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, formPanelLayout.createSequentialGroup()
+                                    .addComponent(problemsLabelFixed)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(problemsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(postLabelFixed)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(postLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(0, 151, Short.MAX_VALUE))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, formPanelLayout.createSequentialGroup()
+                                    .addComponent(recordLabelFixed)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(recordDateLabel))))))
                 .addContainerGap())
         );
         formPanelLayout.setVerticalGroup(
@@ -626,61 +663,64 @@ public class MainWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cpfCnpjLabelFixed)
-                    .addComponent(cpfCnpjLabel))
+                    .addComponent(cpfCnpjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(incomingCallDetailsFixed)
+                    .addComponent(incomingCallDetails, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(faxLabelFixed)
-                    .addComponent(faxLabel)
+                    .addComponent(faxLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cellPhoneLabelFixed)
-                    .addComponent(cellPhoneLabel))
+                    .addComponent(cellPhoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(emailLabelFixed)
-                    .addComponent(emailLabel)
+                    .addComponent(emailLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(residentialPhoneLavelFixed)
-                    .addComponent(residentialPhoneLabel))
+                    .addComponent(residentialPhoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addressLabelFixed)
-                    .addComponent(addressLabel)
+                    .addComponent(addressLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(primaryBusinessPhoneLabelFixed)
-                    .addComponent(primaryBusinessPhoneLabel))
+                    .addComponent(primaryBusinessPhoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cityLabelFixed)
-                    .addComponent(cityLabel)
+                    .addComponent(cityLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(secondaryBusinessPhoneLabelFixed)
-                    .addComponent(secondaryBusinessPhoneLabel))
+                    .addComponent(secondaryBusinessPhoneLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(municipalityLabelFixed)
-                    .addComponent(municipalityLabel)
-                    .addComponent(districtLabelFixed)
+                .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(municipalityLabelFixed)
+                        .addComponent(municipalityLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(districtLabelFixed))
                     .addComponent(districtLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(corporateNameLabelFixed)
-                    .addComponent(corporateNameLabel)
+                    .addComponent(corporateNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(stateAbbreviationLabelFixed)
-                    .addComponent(stateAbbreviationLabel))
+                    .addComponent(stateAbbreviationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(birthDateLabelFixed)
-                    .addComponent(birthDateLabel)
+                    .addComponent(birthDateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(recordLabelFixed)
-                    .addComponent(recordDateLabel))
+                    .addComponent(recordDateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(formPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(legalPersonLavelFixed)
-                    .addComponent(legalPersonLabel)
+                    .addComponent(legalPersonLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(problemsLabelFixed)
-                    .addComponent(problemsLabel)
+                    .addComponent(problemsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(postLabelFixed)
-                    .addComponent(postLabel))
+                    .addComponent(postLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(observationLabelFixed)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(observationScrollPannel, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
+                .addComponent(observationScrollPannel, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -856,70 +896,76 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_nextButtonActionPerformed
 
+    private void incomingCallDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_incomingCallDetailsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_incomingCallDetailsActionPerformed
+
     private void setCurrentIndexLabel() {
         currentSearchViewingIndexLabel.setText(String.format("%02d", currentSearchResultIndex + 1) + "/" + String.format("%02d", lastSearchResult.size()));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
-    private javax.swing.JLabel addressLabel;
+    private javax.swing.JTextField addressLabel;
     private javax.swing.JLabel addressLabelFixed;
     private javax.swing.JMenuItem autoRecordMenuItem;
-    private javax.swing.JLabel birthDateLabel;
+    private javax.swing.JTextField birthDateLabel;
     private javax.swing.JLabel birthDateLabelFixed;
     private javax.swing.JPanel bodyPanel;
-    private javax.swing.JLabel cellPhoneLabel;
+    private javax.swing.JTextField cellPhoneLabel;
     private javax.swing.JLabel cellPhoneLabelFixed;
-    private javax.swing.JLabel cityLabel;
+    private javax.swing.JTextField cityLabel;
     private javax.swing.JLabel cityLabelFixed;
-    private javax.swing.JLabel corporateNameLabel;
+    private javax.swing.JTextField corporateNameLabel;
     private javax.swing.JLabel corporateNameLabelFixed;
-    private javax.swing.JLabel cpfCnpjLabel;
+    private javax.swing.JTextField cpfCnpjLabel;
     private javax.swing.JLabel cpfCnpjLabelFixed;
     private javax.swing.JLabel currentSearchViewingIndexLabel;
-    private javax.swing.JLabel districtLabel;
+    private javax.swing.JTextField districtLabel;
     private javax.swing.JLabel districtLabelFixed;
-    private javax.swing.JLabel emailLabel;
+    private javax.swing.JTextField emailLabel;
     private javax.swing.JLabel emailLabelFixed;
     private javax.swing.JMenuItem exitMenuItem;
-    private javax.swing.JLabel faxLabel;
+    private javax.swing.JTextField faxLabel;
     private javax.swing.JLabel faxLabelFixed;
     private javax.swing.JMenu fileMenuItem;
     private javax.swing.JPanel formPanel;
     private javax.swing.JPanel headerPanel;
     private javax.swing.JMenu helpMenu;
+    private javax.swing.JTextField incomingCallDetails;
+    private javax.swing.JLabel incomingCallDetailsFixed;
     private javax.swing.JPanel incomingCallHeaderPanel;
     private javax.swing.JLabel incomingCallLabel;
     private javax.swing.JList incomingCallList;
     private javax.swing.JPanel incomingCallMainPanel;
     private javax.swing.JScrollPane incomingCallScrollPane;
     private javax.swing.JPanel leftPanel;
-    private javax.swing.JLabel legalPersonLabel;
+    private javax.swing.JTextField legalPersonLabel;
     private javax.swing.JLabel legalPersonLavelFixed;
     private javax.swing.JMenuBar menuBar;
-    private javax.swing.JLabel municipalityLabel;
+    private javax.swing.JTextField municipalityLabel;
     private javax.swing.JLabel municipalityLabelFixed;
-    private javax.swing.JLabel nameLabel;
+    private javax.swing.JTextField nameLabel;
     private javax.swing.JButton nextButton;
     private javax.swing.JLabel observationLabelFixed;
     private javax.swing.JScrollPane observationScrollPannel;
     private javax.swing.JTextPane observationTextPane;
-    private javax.swing.JLabel postLabel;
+    private javax.swing.JTextField postLabel;
     private javax.swing.JLabel postLabelFixed;
     private javax.swing.JButton previousButton;
-    private javax.swing.JLabel primaryBusinessPhoneLabel;
+    private javax.swing.JTextField primaryBusinessPhoneLabel;
     private javax.swing.JLabel primaryBusinessPhoneLabelFixed;
-    private javax.swing.JLabel problemsLabel;
+    private javax.swing.JTextField problemsLabel;
     private javax.swing.JLabel problemsLabelFixed;
     private javax.swing.JLabel projectDescriptionLabel;
     private javax.swing.JLabel projectLabel;
     private javax.swing.JButton recordButton;
-    private javax.swing.JLabel recordDateLabel;
+    private javax.swing.JTextField recordDateLabel;
     private javax.swing.JLabel recordFixedLabel;
     private javax.swing.JLabel recordLabelFixed;
     private javax.swing.JLabel recordStatusLabel;
     private javax.swing.JLabel recordTimeLabel;
-    private javax.swing.JLabel residentialPhoneLabel;
+    private javax.swing.JTextField residentialPhoneLabel;
     private javax.swing.JLabel residentialPhoneLavelFixed;
     private javax.swing.JPanel rightPanel;
     private javax.swing.JPanel rightSidePanel;
@@ -929,9 +975,9 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel searchMessageLabel;
     private javax.swing.JPanel searchPanel;
     private javax.swing.JTextField searchTextField;
-    private javax.swing.JLabel secondaryBusinessPhoneLabel;
+    private javax.swing.JTextField secondaryBusinessPhoneLabel;
     private javax.swing.JLabel secondaryBusinessPhoneLabelFixed;
-    private javax.swing.JLabel stateAbbreviationLabel;
+    private javax.swing.JTextField stateAbbreviationLabel;
     private javax.swing.JLabel stateAbbreviationLabelFixed;
     private javax.swing.JLabel versionLabel;
     // End of variables declaration//GEN-END:variables
@@ -1002,8 +1048,11 @@ public class MainWindow extends javax.swing.JFrame {
             emptyCustomer();
         }
         if (recentCallText != null) {
+            incomingCallDetails.setText(recentCallText);
             recentCallers.put(recentCallText, caller);
             appendCallerList(recentCallText);
+        } else {
+            incomingCallDetails.setText("");
         }
         updateUIRecordState();
     }

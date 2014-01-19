@@ -1,5 +1,6 @@
 package identicall;
 
+import audiorecord.VoiceRecorderFactory;
 import helper.AppProperties;
 import helper.Formater;
 import dao.CityDAO;
@@ -17,6 +18,9 @@ import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;
 import helper.PhoneNormilizer;
+import helper.ReportGenerator;
+import incomingcallnotification.IncomingCallDescriptor;
+import incomingcallnotification.IncomingCallNotifier;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,8 +40,9 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.classic.Session;
 import serialclient.SerialClientException;
+import server.AppServer;
 
-public class Main implements PhoneNumberReadyListener, CustomerSearcher {
+public class Main extends IncomingCallNotifier implements PhoneNumberReadyListener, CustomerSearcher {
 
     final private static String TIME_ZONE_ID = "Brazil/East";
     final private static String HIBERNATE_CFG_PROPERTY = "hibernatecfg";
@@ -51,6 +56,8 @@ public class Main implements PhoneNumberReadyListener, CustomerSearcher {
     public static void main(String[] args) throws
             FileNotFoundException, IOException, NoSuchPortException, PortInUseException, UnsupportedCommOperationException, TooManyListenersException, SerialClientException {
         Main mainApp = new Main();
+        mainApp.addIncomingCallListener(new ReportGenerator());
+        mainApp.addIncomingCallListener(AppServer.getInstance());
         mainApp.setup();
     }
 
@@ -106,7 +113,15 @@ public class Main implements PhoneNumberReadyListener, CustomerSearcher {
         properties.put(Customer.CELL_PHONE_COLUMN, phone);
         properties.put(Customer.PRIMARY_BUSINESS_PHONE_COLUMN, phone);
         properties.put(Customer.RESIDENTIAL_PHONE_COLUMN, phone);
-        searchAndPopulateByProperties(properties, true);
+        List<Customer> customers = searchAndPopulateByProperties(properties, true);
+        final IncomingCallDescriptor descriptor = new IncomingCallDescriptor(phone, customers);
+        new Thread() {
+            
+            @Override
+            public void run() {
+                notifyIncomingCallListeners(descriptor);
+            }
+        }.start();
     }
 
     private List<Customer> searchAndPopulateByProperties(Map<String, String> properties, boolean fromLine) {

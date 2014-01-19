@@ -1,5 +1,6 @@
 package identicall;
 
+import gnu.io.CommPortIdentifier;
 import helper.DiagnosticRunner;
 import helper.AppProperties;
 import serialclient.SerialClient;
@@ -9,6 +10,7 @@ import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 import gnu.io.UnsupportedCommOperationException;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.TooManyListenersException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,7 +22,7 @@ public class PhoneLineWatcher implements SerialPortEventListener {
     final private static char END_NUMBER_MARK = '\n';
     final private static int PHONE_NUMBER_BUFFER_SIZE = 20;
     final public static String SERIAL_PORT_PATH_PROPERTY = "serialportpath";
-    final public static String SERIAL_PORT_NAME_PROPERTY = "serialportname";
+    final public static String PREFERRED_SERIAL_PORT_NAME_PROPERTY = "preferredserialportname";
     final public static String FAKE_SERIAL_PROPERTY = "fakeserail";
 
     private final SerialClient serialClient;
@@ -76,18 +78,31 @@ public class PhoneLineWatcher implements SerialPortEventListener {
         }
     }
 
+    private String getAvailableSerialPort() throws IOException {
+        String portName = "";
+        String preferredSerialPortName = AppProperties.getProperty(PREFERRED_SERIAL_PORT_NAME_PROPERTY);
+        Enumeration portList = CommPortIdentifier.getPortIdentifiers();
+        while (portList.hasMoreElements()) {
+            CommPortIdentifier portId = (CommPortIdentifier) portList.nextElement();
+            if (portId.getPortType() != CommPortIdentifier.PORT_PARALLEL) {
+                portName = portId.getName();
+                if (portName.equals(preferredSerialPortName)) {
+                    break;
+                }
+            }
+        }
+        return portName;
+    }
+
     private void connectSerialClient() throws
             NoSuchPortException, PortInUseException, UnsupportedCommOperationException, TooManyListenersException, IOException, SerialClientException {
 
         if (AppProperties.getProperty(FAKE_SERIAL_PROPERTY).equals("false")) {
-            String portName = "";
-            Enumeration portList = CommPortIdentifier.getPortIdentifiers();
-            if (portList.hasMoreElements()) {
-                CommPortIdentifier portId = (CommPortIdentifier) portList.nextElement();
-                if (portId.getPortType() != CommPortIdentifier.PORT_PARALLEL) {
-                    portName = portId.getName();
-                }
+            String portName = getAvailableSerialPort();
+            if (portName.endsWith("")) {
+                throw new SerialClientException("There is no available port.");
             }
+            AppProperties.setUsedSerialPortName(portName);
             serialClient.connect(portName);
             serialClient.addSerialPortEventListener(this);
         } else {
@@ -98,13 +113,10 @@ public class PhoneLineWatcher implements SerialPortEventListener {
                 public void run() {
 
                     String[] numbers = new String[]{
-                        "4791538642",
+                        "5599721816",
                         "11981031001",
-                        "4499770256",
-                        "5199654276",
-                        "5599791816",
                         "5399667486",
-                        "5399720783",
+                        "5399744783",
                         "5596032434",
                         "4199620115",
                         "4791538642",
@@ -126,6 +138,10 @@ public class PhoneLineWatcher implements SerialPortEventListener {
                         "5599474932",
                         "4999649313",
                         "5499823168",
+                        "4791538642",
+                        "11981031001",
+                        "4499770256",
+                        "5199654276",
                         "5381350116"
                     };
                     int i = 0;
