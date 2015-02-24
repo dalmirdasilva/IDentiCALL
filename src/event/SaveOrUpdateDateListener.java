@@ -1,7 +1,8 @@
 package event;
 
-import org.hibernate.event.SaveOrUpdateEvent;
-import org.hibernate.event.def.DefaultSaveOrUpdateEventListener;
+import org.hibernate.event.internal.DefaultSaveOrUpdateEventListener;
+import org.hibernate.event.spi.SaveOrUpdateEvent;
+
 
 public class SaveOrUpdateDateListener extends DefaultSaveOrUpdateEventListener {
 

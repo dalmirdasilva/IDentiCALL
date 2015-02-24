@@ -38,7 +38,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
-import org.hibernate.classic.Session;
+import org.hibernate.Session;
 import serialclient.SerialClientException;
 import server.AppServer;
 import view.Normalizing;
@@ -55,7 +55,8 @@ public class Main extends IncomingCallNotifier implements PhoneNumberReadyListen
     private MainWindow window;
 
     public static void main(String[] args) throws
-            FileNotFoundException, IOException, NoSuchPortException, PortInUseException, UnsupportedCommOperationException, TooManyListenersException, SerialClientException {
+            FileNotFoundException, IOException, NoSuchPortException, PortInUseException, 
+            UnsupportedCommOperationException, TooManyListenersException, SerialClientException {
         Main mainApp = new Main();
         mainApp.addIncomingCallListener(new ReportGenerator());
         mainApp.addIncomingCallListener(AppServer.getInstance());

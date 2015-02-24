@@ -6,23 +6,19 @@ import java.util.List;
 
 public class IncomingCallNotifier {
 
-    private List<IncomingCallListener> incomingCallListeners;
+    private final List<IncomingCallListener> incomingCallListeners;
+    
+    public IncomingCallNotifier() {
+        incomingCallListeners = new ArrayList<>();    
+    }
     
     public void addIncomingCallListener(IncomingCallListener listener) {
-        checkList();
         incomingCallListeners.add(listener);
     }
 
     protected void notifyIncomingCallListeners(IncomingCallDescriptor descriptor) {
-        checkList();
         for (IncomingCallListener listener : incomingCallListeners) {
             listener.incomingCall(descriptor);
-        }
-    }
-
-    private void checkList() {
-        if (incomingCallListeners == null) {
-            incomingCallListeners = new ArrayList<>();
         }
     }
 }

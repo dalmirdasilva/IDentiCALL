@@ -3,7 +3,7 @@ package dao.hibernate;
 
 import dao.DAOFactory;
 import dao.GenericDAO;
-import org.hibernate.classic.Session;
+import org.hibernate.Session;
 
 public class HibernateDAOFactory extends DAOFactory {
  

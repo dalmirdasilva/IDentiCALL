@@ -1,13 +1,9 @@
 package audiorecord;
 
 import helper.AppProperties;
-import entity.Customer;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,6 +16,16 @@ public class VoiceRecorderArecordImp extends VoiceRecorder {
 
     VoiceRecorderArecordImp() {
         super();
+    }
+
+    @Override
+    protected void startRecordingImp(File outputFile) throws IOException {
+        lauchRecordProcess(outputFile);
+    }
+
+    @Override
+    protected void stopRecordingImp() throws IOException {
+        stopRecordProcess();
     }
 
     private static void lauchRecordProcess(File outputFile) throws IOException {
@@ -52,15 +58,5 @@ public class VoiceRecorderArecordImp extends VoiceRecorder {
             }
             recorderProcess = null;
         }
-    }
-
-    @Override
-    protected void startRecordingImp(File outputFile) throws IOException {
-        lauchRecordProcess(outputFile);
-    }
-
-    @Override
-    protected void stopRecordingImp() throws IOException {
-        stopRecordProcess();
     }
 }

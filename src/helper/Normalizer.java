@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class Normalizer {
-    
+
     private final static String NORMALIZE_LOCK_FILE_PROPERTY = "normalizelockfile";
 
     public static void normalize(CustomerDAO customerDAO, CityDAO cityDAO) throws Exception {
@@ -33,10 +33,10 @@ public class Normalizer {
             if (customer.getSecondaryBusinessPhone() != null) {
                 customer.setSecondaryBusinessPhone(Formater.removeFormatation(customer.getSecondaryBusinessPhone()));
             }
-            if (customer.getFax()!= null) {
+            if (customer.getFax() != null) {
                 customer.setFax(Formater.removeFormatation(customer.getFax()));
             }
-            if (customer.getCpfCnpj()!= null) {
+            if (customer.getCpfCnpj() != null) {
                 customer.setCpfCnpj(Formater.removeFormatation(customer.getCpfCnpj()));
             }
             System.out.println(customerDAO.saveEntity(customer));
@@ -52,6 +52,4 @@ public class Normalizer {
         File file = new File(AppProperties.getProperty(NORMALIZE_LOCK_FILE_PROPERTY));
         file.createNewFile();
     }
-    
-    
 }

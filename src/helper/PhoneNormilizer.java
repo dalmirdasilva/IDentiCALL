@@ -19,7 +19,7 @@ public class PhoneNormilizer {
         if (phone.length() >= MAX_PHONE_SIZE) {
             phone = phone.substring(0, MAX_PHONE_SIZE);
         }
-		// TODO:should be removed
+        // TODO:should be removed
         phone = phone.replace('?', '%');
         return phone;
     }

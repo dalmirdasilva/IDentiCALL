@@ -1,14 +1,12 @@
 package helper;
 
-import identicall.PhoneLineWatcher;
-import helper.AppProperties;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DiagnosticRunner {
-    
+
     final private static String LOCK_FILE_PATH_PREFIX = "/var/lock/LCK..";
 
     public static void runDiagnostic() throws IOException {

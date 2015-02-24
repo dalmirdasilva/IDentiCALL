@@ -9,7 +9,7 @@ import java.util.Properties;
 
 public class AppProperties {
 
-    final private static String PROPERTIES_FILE = "/home/dalmir/NetBeansProjects/IDentiCALL/src/config.properties";
+    final private static String PROPERTIES_FILE = "/home/dalmir/storage/IDentiCALL/src/config.properties";
     private static File file;
     private static Properties properties;
     private static String usedSerialPortName;
