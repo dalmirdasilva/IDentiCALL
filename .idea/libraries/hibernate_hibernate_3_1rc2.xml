@@ -1,0 +1,18 @@
+<component name="libraryTable">
+  <library name="hibernate:hibernate:3.1rc2" type="repository">
+    <properties maven-id="hibernate:hibernate:3.1rc2" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/hibernate/hibernate/3.1rc2/hibernate-3.1rc2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/ant/ant/1.6.5/ant-1.6.5.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/asm/asm/1.5.3/asm-1.5.3.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/cglib/cglib/2.1_2/cglib-2.1_2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/commons-collections/commons-collections/2.1.1/commons-collections-2.1.1.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/ehcache/ehcache/1.1/ehcache-1.1.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/hibernate/antlr/2.7.5H3/antlr-2.7.5H3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

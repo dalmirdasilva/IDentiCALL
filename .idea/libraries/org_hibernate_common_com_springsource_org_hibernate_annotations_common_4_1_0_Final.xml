@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="org.hibernate.common:com.springsource.org.hibernate.annotations.common:4.1.0.Final" type="repository">
+    <properties maven-id="org.hibernate.common:com.springsource.org.hibernate.annotations.common:4.1.0.Final" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/hibernate/common/com.springsource.org.hibernate.annotations.common/4.1.0.Final/com.springsource.org.hibernate.annotations.common-4.1.0.Final.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/jboss/logging/com.springsource.org.jboss.logging/3.1.0.CR2/com.springsource.org.jboss.logging-3.1.0.CR2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/log4j/com.springsource.org.apache.log4j/1.2.16/com.springsource.org.apache.log4j-1.2.16.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/jboss/logmanager/com.springsource.org.jboss.logmanager/1.2.0.GA/com.springsource.org.jboss.logmanager-1.2.0.GA.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/com.springsource.slf4j.api/1.6.1/com.springsource.slf4j.api-1.6.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

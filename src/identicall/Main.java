@@ -21,7 +21,6 @@ import helper.PhoneNormilizer;
 import helper.ReportGenerator;
 import incomingcallnotification.IncomingCallDescriptor;
 import incomingcallnotification.IncomingCallNotifier;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -55,7 +54,7 @@ public class Main extends IncomingCallNotifier implements PhoneNumberReadyListen
     private MainWindow window;
 
     public static void main(String[] args) throws
-            FileNotFoundException, IOException, NoSuchPortException, PortInUseException, 
+            IOException, NoSuchPortException, PortInUseException,
             UnsupportedCommOperationException, TooManyListenersException, SerialClientException {
         Main mainApp = new Main();
         mainApp.addIncomingCallListener(new ReportGenerator());
@@ -88,7 +87,7 @@ public class Main extends IncomingCallNotifier implements PhoneNumberReadyListen
             normalizing.setVisible(true);
             Normalizer.normalize(customerDAO, cityDAO);
             new Thread() {
-                
+
                 @Override
                 public void run() {
                     try {
@@ -104,7 +103,7 @@ public class Main extends IncomingCallNotifier implements PhoneNumberReadyListen
         }
 
         final Main instance = this;
-        PhoneLineWatcher incomingCallListener = new PhoneLineWatcher(instance);
+        new PhoneLineWatcher(instance);
 
         java.awt.EventQueue.invokeLater(
                 new Runnable() {
@@ -169,7 +168,7 @@ public class Main extends IncomingCallNotifier implements PhoneNumberReadyListen
     }
 
     @Override
-    public List<Customer> searchCustomer(Map<String, String> propertiesMap, boolean apeendRecentCall) {
-        return searchAndPopulateByProperties(propertiesMap, apeendRecentCall);
+    public List<Customer> searchCustomer(Map<String, String> propertiesMap, boolean appendRecentCall) {
+        return searchAndPopulateByProperties(propertiesMap, appendRecentCall);
     }
 }

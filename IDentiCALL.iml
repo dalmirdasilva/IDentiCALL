@@ -20,5 +20,10 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="RXTXcomm" level="project" />
+    <orderEntry type="library" name="hibernate:hibernate:3.1rc2" level="project" />
+    <orderEntry type="library" name="javax.ws.rs:javax.ws.rs-api:2.0-rc2" level="project" />
+    <orderEntry type="library" name="javax.persistence:persistence-api:1.0.2" level="project" />
+    <orderEntry type="library" name="org.hibernate.common:com.springsource.org.hibernate.annotations.common:4.1.0.Final" level="project" />
+    <orderEntry type="library" name="org.hibernate:com.springsource.org.hibernate.annotations:3.4.0.GA-A" level="project" />
   </component>
 </module>
