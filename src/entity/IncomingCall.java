@@ -2,7 +2,6 @@ package entity;
 
 import java.io.Serializable;
 import java.sql.Date;
-import java.sql.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

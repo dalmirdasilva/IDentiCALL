@@ -57,7 +57,7 @@ public class PhoneLineWatcher implements SerialPortEventListener {
                 break;
             case SerialPortEvent.DATA_AVAILABLE:
                 try {
-                    int input = 0;
+                    int input;
                     while ((input = serialClient.getInputStream().read()) != -1) {
                         if (input == END_NUMBER_MARK || incomingBufferPoiter >= PHONE_NUMBER_BUFFER_SIZE) {
                             if (phoneNumberReadyListener != null) {
@@ -111,7 +111,7 @@ public class PhoneLineWatcher implements SerialPortEventListener {
 
                 @Override
                 public void run() {
-                    
+
                     String[] numbers = new String[]{
                         "5599721816",
                         "11981031001",
