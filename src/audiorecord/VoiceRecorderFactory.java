@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 public class VoiceRecorderFactory {
 
-    private static String RECORDER_METHOD_PROPERTY = "recordingusing";
+    private static final String RECORDER_METHOD_PROPERTY = "recordingusing";
     private static VoiceRecorder instance;
 
     public static VoiceRecorder getInstance() {
@@ -19,7 +19,7 @@ public class VoiceRecorderFactory {
             Logger.getLogger(VoiceRecorderFactory.class.getName()).log(Level.SEVERE, null, ex);
         }
         if (instance == null) {
-            if (using.startsWith("process")) {
+            if (using != null && using.startsWith("process")) {
                 instance = new VoiceRecorderArecordImp();
             } else {
                 instance = new VoiceRecorderAudioImp();

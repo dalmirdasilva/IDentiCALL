@@ -28,29 +28,29 @@ public class AppProperties {
         properties.load(new FileInputStream(file));
     }
 
-    private static void checProperties() throws IOException {
+    private static void checkProperties() throws IOException {
         if (properties == null) {
             setup();
         }
     }
 
     public static Properties getProperties() throws IOException {
-        checProperties();
+        checkProperties();
         return properties;
     }
 
     public static String getProperty(String property) throws IOException {
-        checProperties();
+        checkProperties();
         return properties.getProperty(property);
     }
 
     public static void setProperty(String property, String value) throws IOException {
-        checProperties();
+        checkProperties();
         properties.setProperty(property, value);
     }
 
     public static void storeProperties() throws FileNotFoundException, IOException {
-        checProperties();
+        checkProperties();
         if (properties != null && file != null) {
             FileOutputStream fos = new FileOutputStream(file);
             properties.store(fos, "");
